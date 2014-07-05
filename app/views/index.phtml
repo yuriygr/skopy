@@ -1,0 +1,60 @@
+<?php use Phalcon\Tag as Tag ?>
+<?= Tag::getDocType(); ?>
+<html lang="ru" class="blue">
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="HandheldFriendly" content="true">
+
+	<?= Tag::getTitle(); ?>
+	<?= Tag::getValue('description'); ?>
+	<?= Tag::getValue('keywords'); ?>
+
+	<?= Tag::stylesheetLink("css/reset.css"); ?>
+	<?= Tag::stylesheetLink("css/style.css"); ?>
+
+</head>
+<body>
+
+<header>
+	<div class="warp">
+		<div class="header-user">
+			<div class="user-info">
+				<div class="username">
+					<?= Tag::getValue('siteName') ?>
+				</div>
+			</div>
+		</div>
+		<div class="header-menu">
+			<li><?= Tag::linkTo('post', 'Блог') ?></li>
+			<?= Tag::linkTo('users/index', 'Вход') ?>
+			<?php if ($this->session->has('auth_login')) { ?>
+			<li><?= Tag::linkTo('post/create', '+Пост') ?></li>
+			<li><?= Tag::linkTo('categories/create', '+Категория') ?></li>
+			<li><?= Tag::linkTo('categories/search', 'Категории') ?></li>
+			<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
+			<?php } ?>
+		</div>
+	</div>
+</header>
+
+<section class="contents">
+	<div class="warp">
+
+		<?= $this->getContent() ?>
+
+	</div>
+</section>
+
+<footer>
+	<div class="warp">
+		<?= Tag::getValue('siteName'); ?> © 2012-<?= date('Y'); ?> # <?= Tag::getValue('siteSlogan'); ?><br>Powered by <b>Phalcon</b>
+	</div>
+</footer>
+
+<?= Tag::javascriptInclude("js/jquery-2.1.0.min.js");?>
+<?= Tag::javascriptInclude("js/main.js");?>
+
+</body>
+</html>

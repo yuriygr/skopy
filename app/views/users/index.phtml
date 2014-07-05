@@ -1,0 +1,21 @@
+<?php use Phalcon\Tag as Tag ?>
+
+<?php echo $this->getContent() ?>
+
+<?php echo Tag::form(array('users/login', 'class' => 'form-inline', 'autocomplete' => 'off')) ?>
+
+	<p>
+		<label for="login">Имя</label><br/>
+		<?php echo Tag::textField(array('login', 'size' => "30")) ?>
+	</p>
+
+	<p>
+		<label for="password">Пароль</label><br/>
+		<?php echo Tag::passwordField(array('password', 'size' => "30")) ?>
+	</p>
+
+	<p>
+		<?php echo Tag::submitButton(array('Вход')) ?>
+	</p>
+
+</form>

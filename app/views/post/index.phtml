@@ -1,0 +1,47 @@
+<?php use Phalcon\Tag as Tag; ?>
+
+<?= $this->getContent() ?>
+
+<?php foreach ($posts->items as $post){ ?>
+
+<article class="box-thread" id="box<?= $post->id ?>">
+	<h2><?= Tag::linkTo('post/show/'.$post->id, $post->subject) ?></h2>
+	<div class="thread-time"><?= $post->timestamp ?></div>
+	<div class="thread-text"><?= $post->message ?></div>
+	<? if($post->category || $post->comments_enabled) { ?>
+	<div class="thread-info">
+		<? if ($post->category) { ?>
+			<span class="thread-info-category">Категория: <?= Tag::linkTo('post/category/'.$post->category, $post->categories->name) ?></span>
+		<? } ?>
+		<? if ($post->comments_enabled) { ?>
+			<span class="thread-info-comments"><?= Tag::linkTo('post/show/'.$post->id. '#comments', 'Комментариев: ' .$post->count) ?></span>
+		<? } ?>
+	</div>
+	<? } ?>
+</article>
+<hr>
+
+<?php } ?>
+
+<!--Переделать к хуям-->
+<?php if ($posts->first != $posts->total_pages) {?>
+
+<article class="box-paginator">
+	<div>
+		<ol>
+			<li><span class="pages">Страницы:</span></li>
+			
+			<?php if ($posts->current != $posts->first) {?>
+				<li><a href="?page=<?= $posts->first; ?>">Первая</a></li>
+				<li><a href="?page=<?= $posts->before; ?>">Предыдущая</a></li>
+			<?php } ?>
+
+			<?php if ($posts->current != $posts->last) {?>
+				<li><a href="?page=<?= $posts->next; ?>">Следующая</a></li>
+				<li><a href="?page=<?= $posts->last; ?>">Последняя</a></li>
+			<?php } ?>
+		</ol>
+	</div>
+</article>
+
+<?php } ?>

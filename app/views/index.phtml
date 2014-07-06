@@ -28,7 +28,7 @@
 		</div>
 		<div class="header-menu">
 			<li><?= Tag::linkTo('post', 'Блог') ?></li>
-			<?= Tag::linkTo('users/index', 'Вход') ?>
+			<li><?= Tag::linkTo('users/index', 'Вход') ?></li>
 			<?php if ($this->session->has('auth_login')) { ?>
 			<li><?= Tag::linkTo('post/create', '+Пост') ?></li>
 			<li><?= Tag::linkTo('categories/create', '+Категория') ?></li>

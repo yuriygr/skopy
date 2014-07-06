@@ -1,7 +1,7 @@
 php_value eaccelerator.optimizer 0
 
-#<IfModule mod_rewrite.c>
-#    RewriteEngine On
-#    RewriteRule ^$ public/     [L]
-#    RewriteRule (.*) public/$1 [L]
-#</IfModule>
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/     [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>

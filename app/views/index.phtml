@@ -27,14 +27,16 @@
 			</div>
 		</div>
 		<div class="header-menu">
-			<li><?= Tag::linkTo('post', 'Блог') ?></li>
-			<li><?= Tag::linkTo('users/index', 'Вход') ?></li>
-			<?php if ($this->session->has('auth_login')) { ?>
-			<li><?= Tag::linkTo('post/create', '+Пост') ?></li>
-			<li><?= Tag::linkTo('categories/create', '+Категория') ?></li>
-			<li><?= Tag::linkTo('categories/search', 'Категории') ?></li>
-			<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
-			<?php } ?>
+			<menu>
+				<li><?= Tag::linkTo('post', 'Блог') ?></li>
+				<li><?= Tag::linkTo('users/index', 'Вход') ?></li>
+				<?php if ($this->session->has('auth_login')) { ?>
+				<li><?= Tag::linkTo('post/create', '+Пост') ?></li>
+				<li><?= Tag::linkTo('categories/create', '+Категория') ?></li>
+				<li><?= Tag::linkTo('categories/search', 'Категории') ?></li>
+				<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
+				<?php } ?>
+			</menu>
 		</div>
 	</div>
 </header>

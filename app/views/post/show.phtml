@@ -2,7 +2,7 @@
 
 <?= $this->getContent() ?>
 
-<article class="box-thread" id="box<?= $post->id ?>">
+<article class="box-thread" id="<?= $post->id ?>">
 	<h2><?= Tag::linkTo('post/show/'.$post->id, $post->subject) ?></h2>
 	<div class="thread-time"><?= $post->timestamp ?></div>
 	<div class="thread-text"><?= $post->message ?></div>
@@ -20,22 +20,23 @@
 <hr>
 
 <? if ($post->comments_enabled) { ?>
+
 <section class="box-comments" id="comments">
 	<h4 class="title">Комментарии:</h4>
 	<hr>
 
 	<?php foreach ($comments as $comment){ ?>
-	<div class="box-post" id="reply_<?= $comment->id ?>">
-		<a id="<?= $comment->id ?>"></a>
+	<div class="box-post" id="<?= $comment->id ?>">
 		<p class="post-info">
 			<span class="name"><?= $comment->name ?><b><?= $comment->tripcode ?></b></span>
 			<span class="time"><?= $comment->timestamp ?></span>
-			<a href="#<?= $comment->id ?>" onclick="insert('>><?= $comment->id ?>'); return false;">#<?= $comment->id ?></a>
+			<a href="#<?= $comment->id ?>">#<?= $comment->id ?></a>
 		</p>
 		<p class="post-text"><?= $comment->message ?></p>
 	</div>
 	<hr>
 	<?php } ?>
+	<?= $this->flashSession->output() ?>
 
 	<?= Tag::form(array("comments/add", "method" => "post", "name" => "formpost", "class" => "box-form", "id" => "form"));?>
 
@@ -61,5 +62,7 @@
 <b><?= Tag::linkTo('post', 'Назад') ?></b>
 
 <? } else { ?>
+
 <section class="box-message error">Комментарии отключены</section>
+
 <? } ?>

@@ -118,6 +118,14 @@ try {
 			'notice' => 'alert info',
 		));
 	});
+	/* And Session Flas */
+	$di->set('flashSession', function() {
+		return new \Phalcon\Flash\Session(array(
+			'error' => 'alert error',
+			'success' => 'alert success',
+			'notice' => 'alert info',
+		));
+	});
 
 	/**
 	 * Start the session the first time some component request the session service

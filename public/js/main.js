@@ -110,6 +110,8 @@ function insert(text) {
 	textarea.focus();
 	}
 }
+
+
 function youtube(idvideo){
 	$('#'+idvideo).replaceWith('<iframe width="360" height="228" style="vertical-align:top;" src="http://www.youtube.com/embed/'+idvideo+'?autoplay=1&theme=light" frameborder="0" allowfullscreen></iframe>');
 }
@@ -128,14 +130,23 @@ function replaceAll(a, b, c){
 
 $(function() {
 	$("#captchaimg").click(function() {
-		captchaReload();
+		$(this).attr('src','/captcha.php?' + Math.random());
+		return false;
 	});
 	$('#form').submit(function(event) {
-		if ($('input[name=captcha]').val() == '') {
+		if ($('input[name=comments_captcha]').val() == '') {
 			$('#popupMessage').remove();
 			popupMessage(_.enterCaptcha);
 			return false;
 		}
 		return true;
 	});
+});
+$(document).on('click', 'a', function(event) {
+	var link = $(event.currentTarget);
+	if (link.text().indexOf('#') !== 0) return true;
+
+	insert('>>' + link.text().match(/\d+/) + '\n');
+	
+	return false;
 });

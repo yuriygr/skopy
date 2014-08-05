@@ -38,7 +38,10 @@ class CommentsController extends ControllerBase
 
 	public function addAction()
 	{
-		if (($this->request->isPost()) && ($this->security->checkToken())) {
+		if (   ($this->request->isPost())
+			&& ($this->security->checkToken())
+			&& ($this->session->get("security_code") == $this->request->getPost('comments_captcha'))) {
+			
 			$comments = new Comments();
 			$comments->name = $this->request->getPost('comments_name');
 			$comments->tripcode = $this->request->getPost('comments_name');
@@ -48,21 +51,16 @@ class CommentsController extends ControllerBase
 
 			if (!$comments->save()) {
 				foreach ($comments->getMessages() as $message) {
-					$this->flash->error((string) $message);
+					$this->flashSession->error((string) $message);
+					return $this->response->redirect("post/show/".$this->request->getPost('post'));
 				}
-				return $this->dispatcher->forward(array(
-					'controller' => 'post',
-					'action' => 'show',
-					'id' => $comments->post
-				));
 			} else {
-				$this->flash->success("Комментарий успешно добавлен");
-				return $this->dispatcher->forward(array(
-					'controller' => 'post',
-					'action' => 'show',
-					'id' => $comments->post
-				));
+				$this->flashSession->success("Комментарий успешно добавлен");
+				return $this->response->redirect("post/show/".$this->request->getPost('post'));
 			}
+		}elseif($this->session->get("security_code") != $this->request->getPost('comments_captcha')){
+			$this->flashSession->error("Капча введена не верно");
+			return $this->response->redirect("post/show/".$this->request->getPost('post'));
 		}
 	}
 

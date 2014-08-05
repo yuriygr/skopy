@@ -44,7 +44,11 @@ class CommentsController extends ControllerBase
 			&& ($this->request->getPost('comments_message'))) {
 			
 			$comments = new Comments();
-			$comments->name = 		$this->request->getPost('comments_name');
+			if($this->request->getPost('comments_name') == '') {
+				$comments->name = 	'Аноним';
+			}else{
+				$comments->name = 	$this->request->getPost('comments_name');
+			}
 			$comments->message = 	$this->markdown->text($this->request->getPost('comments_message'));
 			$comments->timestamp = 	time();
 			$comments->post = 		$this->request->getPost('post');

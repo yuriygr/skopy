@@ -50,10 +50,15 @@ class Comments extends ModelBase
     public function beforeSave()
     {
         global $NameAndTripcode;
+
         // Форматирование трипкода и имени
         $NameAndTripcode = $this->calcNameAndTripcode($this->name);
-        $this->name = $NameAndTripcode[0];
-        $this->tripcode = $NameAndTripcode[1];
+        if (is_array($NameAndTripcode)) {
+            $this->name = $NameAndTripcode[0];
+            $this->tripcode = $NameAndTripcode[1];
+        } else {
+            $this->tripcode = '';
+        }
     }
 
     public function afterFetch()

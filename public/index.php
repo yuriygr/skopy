@@ -165,6 +165,10 @@ try {
 	Phalcon\Tag::setDefault('siteName', $config->site->name);
 	Phalcon\Tag::setDefault('siteSlogan', $config->site->slogan);
 
+	Phalcon\Mvc\Model::setup(array(
+	    'notNullValidations' => false
+	));
+
 	/**
 	 * Handle the request
 	 */

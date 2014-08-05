@@ -40,14 +40,14 @@ class CommentsController extends ControllerBase
 	{
 		if (   ($this->request->isPost())
 			&& ($this->security->checkToken())
-			&& ($this->session->get("security_code") == $this->request->getPost('comments_captcha'))) {
+			&& ($this->session->get("security_code") == $this->request->getPost('comments_captcha'))
+			&& ($this->request->getPost('comments_message'))) {
 			
 			$comments = new Comments();
-			$comments->name = $this->request->getPost('comments_name');
-			$comments->tripcode = $this->request->getPost('comments_name');
-			$comments->message = $this->markdown->text($this->request->getPost('comments_message'));
-			$comments->timestamp = time();
-			$comments->post = $this->request->getPost('post');
+			$comments->name = 		$this->request->getPost('comments_name');
+			$comments->message = 	$this->markdown->text($this->request->getPost('comments_message'));
+			$comments->timestamp = 	time();
+			$comments->post = 		$this->request->getPost('post');
 
 			if (!$comments->save()) {
 				foreach ($comments->getMessages() as $message) {
@@ -59,7 +59,13 @@ class CommentsController extends ControllerBase
 				return $this->response->redirect("post/show/".$this->request->getPost('post'));
 			}
 		}elseif($this->session->get("security_code") != $this->request->getPost('comments_captcha')){
+
 			$this->flashSession->error("Капча введена не верно");
+			return $this->response->redirect("post/show/".$this->request->getPost('post'));
+
+		}elseif(!$this->request->getPost('comments_message')){
+
+			$this->flashSession->error("Сообщение должно быть написанно");
 			return $this->response->redirect("post/show/".$this->request->getPost('post'));
 		}
 	}

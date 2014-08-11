@@ -49,7 +49,7 @@ class CommentsController extends ControllerBase
 			}else{
 				$comments->name = 	$this->request->getPost('comments_name');
 			}
-			$comments->message = 	$this->markdown->text($this->request->getPost('comments_message'));
+			$comments->message = 	$this->wakabamark->text($this->request->getPost('comments_message'));
 			$comments->timestamp = 	time();
 			$comments->post = 		$this->request->getPost('post');
 

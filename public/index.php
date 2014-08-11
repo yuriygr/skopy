@@ -151,6 +151,14 @@ try {
 		$markdown->setBreaksEnabled(true);
 		return $markdown;
 	});
+	
+	/*
+	 * And Wakabamark for a posts.
+	 */
+	$di->set('wakabamark', function() {
+		$wakabamark = new \Phalcon\Wakabamark();
+		return $wakabamark;
+	});
 
 	/**
 	 * Set the meta value for the template

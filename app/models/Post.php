@@ -22,7 +22,7 @@ class Post extends ModelBase
     public $message;
 
     /**
-     * @var string
+     * @var int
      *
      */
     public $timestamp;
@@ -34,10 +34,16 @@ class Post extends ModelBase
     public $category;
 
     /**
-     * @var integer
+     * @var int
      *
      */
     public $comments_enabled;
+
+    /**
+     * @var string
+     *
+     */
+    public $images;
 
     /**
      * Initializer method for model.

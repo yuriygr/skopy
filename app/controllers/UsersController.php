@@ -2,7 +2,7 @@
 
 class UsersController extends ControllerBase
 {
-
+	
 	public function indexAction()
 	{
 		
@@ -22,7 +22,7 @@ class UsersController extends ControllerBase
 			));
 
 			if ($user === false){
-				$this->flash->error("Данные не верны");
+				$this->flashSession->error("Данные не верны");
 				return $this->dispatcher->forward(array(
 					'controller' => 'users',
 					'action' => 'index'
@@ -32,24 +32,18 @@ class UsersController extends ControllerBase
 			$this->session->set('auth', $user->id);
 			$this->session->set('auth_login', $user->login);
 
-			$this->flash->success("Вы успешно вошли");
+			$this->flashSession->success("Вы успешно вошли");
 		}
 
-		return $this->dispatcher->forward(array(
-			'controller' => 'post',
-			'action' => 'index'
-		));
+		return $this->response->redirect("post/index");
 	}
 
 	public function logoutAction()
 	{
 		$this->session->remove('auth');
 		$this->session->remove('auth_login');
-		$this->flash->success("Вы успешно покинули систему");
-		return $this->dispatcher->forward(array(
-			'controller' => 'post',
-			'action' => 'index'
-		));
+		$this->flashSession->success("Вы успешно покинули систему");
+		return $this->response->redirect("post/index");
 	}
 
 }

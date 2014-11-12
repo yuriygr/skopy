@@ -2,30 +2,18 @@
 
 <?= $this->getContent(); ?>
 
-<?= Tag::form(array("post/create", "class" => "box-form")) ?>
-	<p class="form-panel">
-		<input type="text" name="post_subject" class="subject" placeholder="Тема"> <input type="submit" value="Добавить пост">
-	</p>
+<script type="text/javascript">
+		$(document).ready(function() {
+			$('#message').redactor();
+		});
+	</script>
+
+<?= Tag::form(array("post/create", "class" => "post-add")) ?>
 	
+	<input type="text" name="post_subject" id="subject" placeholder="Заголовок записи">
+
 	<textarea name="post_message" cols="40" id="message" rows="10" placeholder="Текст"></textarea>
 
-	<p class="form-panel">
-		Категории: <?= Tag::select(array(
-			"post_category", "class" => "select",
-			Categories::find('id'),
-			"using" => array("abbr", "name"),
-			"useEmpty" => true,
-			'emptyText' => 'Без категории'
-		));
-		?>
-		Комментарии: <?= Tag::selectStatic(array(
-	        "post_comments", "class" => "select",
-	        array(
-	            "1" => "Включить",
-	            "0" => "Выключить",
-	        )
-	    ));
-	    ?>
-	</p>
+	<input type="submit" id="submit" value="Добавить пост">
 
 <?= Tag::tagHtmlClose("form") ?>

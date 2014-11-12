@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
 	<meta charset="utf-8">
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="HandheldFriendly" content="true">
 
@@ -11,52 +11,51 @@
 	<?= Tag::getValue('description'); ?>
 	<?= Tag::getValue('keywords'); ?>
 
-	<?= Tag::stylesheetLink("css/reset.css"); ?>
-	<?= Tag::stylesheetLink("css/style.css"); ?>
+	<?php $this->assets->outputCss() ?>
+
+	<?php $this->assets->outputJs() ?>
 
 </head>
 <body>
 
 <header>
 	<div class="warp">
-		<div class="header-user">
-			<div class="user-info">
-				<div class="username">
-					<?= Tag::getValue('siteName') ?>
-				</div>
-			</div>
-		</div>
-		<div class="header-menu">
-			<menu>
-				<li><?= Tag::linkTo('post', 'Блог') ?></li>
-				<li><?= Tag::linkTo('users/index', 'Вход') ?></li>
-				<?php if ($this->session->has('auth_login')) { ?>
-				<li><?= Tag::linkTo('post/create', '+Пост') ?></li>
-				<li><?= Tag::linkTo('categories/create', '+Категория') ?></li>
-				<li><?= Tag::linkTo('categories/search', 'Категории') ?></li>
-				<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
-				<?php } ?>
-			</menu>
-		</div>
+	<div class="header-name">
+		<a href="/">Иван Иванов</a>
 	</div>
+	<ul class="header-menu">
+		<li><?= Tag::linkTo('post', 'Блог') ?></li>
+		<?php if ($this->session->has('auth_login')) { ?>
+		<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
+		<?php } ?>
+	</ul>
+	</div>
+	<ul class="header-button">
+		<?php if ($this->session->has('auth_login')) { ?>
+		<li><a id="add" href="/p/create"><i class="fa fa-pencil"></i></a></li>
+		<?php } ?>
+		<li><a id="search" href="#"><i class="fa fa-search"></i></a></li>
+		<li><a id="bars" href="#"><i class="fa fa-bars"></i></a></li>
+	</ul>
 </header>
 
-<section class="contents">
-	<div class="warp">
+<?php $this->flashSession->output(); ?>
 
-		<?= $this->getContent() ?>
+<section id="post">
+<div class="warp">
 
-	</div>
+	<?= $this->getContent() ?>
+
+</div>
 </section>
 
 <footer>
-	<div class="warp">
-		<?= Tag::getValue('siteName'); ?> © 2012-<?= date('Y'); ?> # <?= Tag::getValue('siteSlogan'); ?><br>Powered by <b>Phalcon</b>
-	</div>
-</footer>
+<div class="warp">
 
-<?= Tag::javascriptInclude("js/jquery-2.1.0.min.js");?>
-<?= Tag::javascriptInclude("js/main.js");?>
+	<p>Powered by <b>Phalcon</b></p>
+
+</div>
+</footer>
 
 </body>
 </html>

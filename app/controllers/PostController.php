@@ -1,4 +1,7 @@
 <?php
+
+use \Phalcon\Utils\Slug as Slug; 
+
 class PostController extends ControllerBase
 {
 
@@ -9,9 +12,9 @@ class PostController extends ControllerBase
 	 */
 	public function beforeExecuteRoute($dispatcher)
 	{
-
+		
 		// Действия, которые защищены законом
-		$restricted = array('create', 'update', 'delete');
+		$restricted = array('create', 'edit', 'delete');
 
 		//auth token
 		$auth = $this->session->get('auth');
@@ -20,9 +23,9 @@ class PostController extends ControllerBase
 		//the user is logged in
 		if (in_array($dispatcher->getActionName(), $restricted) && !$auth) {
 
-			$this->flash->error("У вас нет доступа к этому модулю");
+			$this->flashSession->error("У вас нет доступа к этому модулю");
 			return $this->dispatcher->forward(array(
-				'controller' => 'index',
+				'controller' => 'post',
 				'action' => 'index'
 			));
 		}
@@ -33,23 +36,9 @@ class PostController extends ControllerBase
 	 */
 	public function indexAction()
 	{
-
-		$category = $this->dispatcher->getParam("category");
-
-		if ($category) {
-			$parameter = array(
-				'category = :category:',
-				'order' => 'id DESC',
-				'bind' => array(
-					'category' => $category
-				)
-			);
-		} else {
-			$parameter = array(
-				'order' => 'id DESC'
-			);
-		}
-
+		$parameter = array(
+			'order' => 'id DESC'
+		);
 		$currentPage = $this->request->getQuery('page', 'int');
 		if ($currentPage <= 0) $currentPage = 1;
 
@@ -58,7 +47,7 @@ class PostController extends ControllerBase
 		$paginator = new \Phalcon\Paginator\Adapter\Model(
 			array(
 				'data' => $post,
-				'limit'=> 9,
+				'limit'=> $this->config->site->postLimit,
 				'page' => $currentPage
 			)
 		);
@@ -69,8 +58,7 @@ class PostController extends ControllerBase
 		if (!$post->items) {
 			return $this->dispatcher->forward(array(
 				'controller' => 'pages',
-				'action' => 'show404',
-				'params' => array('type' => 'noPost')
+				'action' => 'show404'
 			));
 		}
 
@@ -84,34 +72,27 @@ class PostController extends ControllerBase
 	 * like we do in this tutorial, $id variable will be escaped so
 	 * we don’t have to deal with it.
 	 */
-	public function showAction($id = 0)
+	public function showAction()
 	{
+		$slug = $this->dispatcher->getParam('slug');
 
-		$post = Post::findFirst(array(
-			'id = :id:',
+		$parameter = array(
+			'slug = :slug:',
 			'bind' => array(
-				'id' => $id
+				'slug' => $slug
 			)
-		));
+		);
 
-		if ((!$post) || ($id <= 0)) {
+		$post = Post::findFirst($parameter);
+
+		if (!$post) {
 			return $this->dispatcher->forward(array(
 				'controller' => 'pages',
-				'action' => 'show404',
-				'params' => array('type' => 'noPost')
+				'action' => 'show404'
 			));
 		}
 
-		$comments = Comments::find(array(
-			'post = :id:',
-			'order' => 'id ASC',
-			'bind' => array(
-				'id' => $id
-			)
-		));
-
 		$this->view->setVar('post', $post);
-		$this->view->setVar('comments', $comments);
 		
 		$this->tag->prependTitle($post->subject . " # ");
 	}
@@ -120,13 +101,16 @@ class PostController extends ControllerBase
 	{
 		$this->tag->prependTitle("Создание записи # ");
 
+		$this->assets
+			->addJs('js/redactor.min.js')
+			->addCss('css/redactor.css');
+
 		if ($this->request->isPost()) {
 			$post = new Post();
-			$post->subject = $this->request->getPost('post_subject');
-			$post->message = $this->markdown->text($this->request->getPost('post_message'));
-			$post->timestamp = time();
-			$post->category = $this->request->getPost('post_category');
-			$post->comments_enabled = $this->request->getPost('post_comments');
+			$post->slug 		= 	Slug::generate($this->request->getPost('post_subject'));
+			$post->subject 		= 	$this->request->getPost('post_subject');
+			$post->message 		=	$this->request->getPost('post_message');
+			$post->timestamp 	= 	time();
 
 			if (!$post->save()) {
 				foreach ($post->getMessages() as $message) {
@@ -137,17 +121,36 @@ class PostController extends ControllerBase
 					'action' => 'create'
 				));
 			} else {
-				$this->flash->success("Запись успешно создана");
-				return $this->dispatcher->forward(array(
-					'controller' => 'post',
-					'action' => 'index'
-				));
+				$this->flashSession->success("Запись успешно создана");
+				return $this->response->redirect("post/index");
 			}
 		}
 	}
 
-	public function updateAction($id = 0)
+	public function editAction()
 	{
+		$slug = $this->dispatcher->getParam('slug');
+
+		$parameter = array(
+			'slug = :slug:',
+			'bind' => array(
+				'slug' => $slug
+			)
+		);
+
+		$post = Post::findFirst($parameter);
+
+		if (!$post) {
+			return $this->dispatcher->forward(array(
+				'controller' => 'pages',
+				'action' => 'show404'
+			));
+		}
+
+		$this->view->setVar('post', $post);
+		
+		$this->tag->prependTitle($post->subject . " - Изменить # ");
+
 		if ($this->request->isPost()) {
 			$post = Post::findFirst($id);
 			$post->name = "RoboCop";
@@ -155,54 +158,33 @@ class PostController extends ControllerBase
 		}
 	}
 
-	public function deleteAction($id = 0)
+	public function deleteAction()
 	{
+		$slug = $this->dispatcher->getParam('slug');
 
-		$post = Post::findFirst(array(
-			'id = :id:',
-			'bind' => array('id' => $id)
-		));
+		$parameter = array(
+			'slug = :slug:',
+			'bind' => array(
+				'slug' => $slug
+			)
+		);
+
+		$post = Post::findFirst($parameter);
+
 		if (!$post) {
-			$this->flash->error("Запись не найдена");
-			return $this->dispatcher->forward(array(
-				'controller' => 'post',
-				'action' => 'index'
-			));
+			$this->flashSession->error("Запись не найдена");
+			return $this->response->redirect("post/index");
 		}
 
 		if (!$post->delete()) {
-			foreach ($post->getMessages() as $message){
-				$this->flash->error((string) $message);
+			foreach ($post->getMessages() as $message) {
+				$this->flashSession->error((string) $message);
 			}
-			return $this->dispatcher->forward(array(
-				'controller' => 'post',
-				'action' => 'index'
-			));
+			return $this->response->redirect("post/index");
 		} else {
-			$this->flash->success("Запись успешно удалена");
-			return $this->dispatcher->forward(array(
-				'controller' => 'post',
-				'action' => 'index'
-			));
+			$this->flashSession->success("Запись успешно удалена");
+			return $this->response->redirect("post/index");
 		}
-	}
-
-	/**
-	 * Select posts by category
-	 * Need peremestit' nahuy too
-	 */
-	public function categoryAction($category = '')
-	{
-		$category = $this->filter->sanitize($category, "alphanum");
-
-		$this->tag->prependTitle($category . " # ");
-
-		return $this->dispatcher->forward(array(
-			'controller' => 'post',
-			'action' => 'index',
-			'params' => array('category' => $category)
-		));
-
 	}
 
 }

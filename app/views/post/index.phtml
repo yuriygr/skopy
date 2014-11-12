@@ -4,44 +4,25 @@
 
 <?php foreach ($posts->items as $post){ ?>
 
-<article class="box-thread" id="box<?= $post->id ?>">
-	<h2><?= Tag::linkTo('post/show/'.$post->id, $post->subject) ?></h2>
-	<div class="thread-time"><?= $post->timestamp ?></div>
-	<div class="thread-text"><?= $post->message ?></div>
-	<? if($post->category || $post->comments_enabled) { ?>
-	<div class="thread-info">
-		<? if ($post->category) { ?>
-			<span class="thread-info-category">Категория: <?= Tag::linkTo('post/category/'.$post->category, $post->categories->name) ?></span>
-		<? } ?>
-		<? if ($post->comments_enabled) { ?>
-			<span class="thread-info-comments"><?= Tag::linkTo('post/show/'.$post->id. '#comments', 'Комментариев: ' .$post->count) ?></span>
-		<? } ?>
-	</div>
-	<? } ?>
+<article class="post">
+	<h2  class="post-title"><?= Tag::linkTo('p/'.$post->slug, $post->subject) ?></h2>
+	<div class="post-date"><?= $post->timestamp ?></div>
+	<div class="post-text"><?= $post->message ?></div>
 </article>
-<hr>
 
 <?php } ?>
 
-<!--Переделать к хуям-->
+
 <?php if ($posts->first != $posts->total_pages) {?>
 
-<article class="box-paginator">
-	<div>
-		<ol>
-			<li><span class="pages">Страницы:</span></li>
-			
-			<?php if ($posts->current != $posts->first) {?>
-				<li><a href="?page=<?= $posts->first; ?>">Первая</a></li>
-				<li><a href="?page=<?= $posts->before; ?>">Предыдущая</a></li>
-			<?php } ?>
+<article class="paginator">
+	<?php if ($posts->current != $posts->first) {?>
+		<a class="paginator-item left" href="?page=<?= $posts->before; ?>"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
+	<?php } ?>
 
-			<?php if ($posts->current != $posts->last) {?>
-				<li><a href="?page=<?= $posts->next; ?>">Следующая</a></li>
-				<li><a href="?page=<?= $posts->last; ?>">Последняя</a></li>
-			<?php } ?>
-		</ol>
-	</div>
+	<?php if ($posts->current != $posts->last) {?>
+		<a class="paginator-item right" href="?page=<?= $posts->next; ?>">Следующая <i class="fa fa-angle-double-right"></i></a>
+	<?php } ?>
 </article>
 
 <?php } ?>

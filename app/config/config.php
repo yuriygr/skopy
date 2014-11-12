@@ -3,24 +3,18 @@
 return new \Phalcon\Config(array(
 	'site' => array(
 		// Мета данные
-		'title'			=> 'Пример блог',
-		'description'	=> 'Тестовый блог',
-		'keywords'		=> 'Блог',
+		'title'			=> 'Иван Иванов',
+		'description'	=> 'Личный бложик Ивана',
+		'keywords'		=> 'Блог, Иван',
 
-		// Значения для шапки сайта и подвала
-		'name'  	=> 'Иван Иванов',
-		'slogan'	=> 'by lina',
-
-		// В разработке
 		'postLimit'		=> '9',
-		'timeFormat'	=> 'j # Y @ H:i', // % - День недели на русском # - Месяц на русском
 	),	
 	'database' => array(
 		'adapter'	=> 'Mysql',
-		'host'		=> 'localhost',
-		'username'	=> 'login',
-		'password'	=> 'password',
-		'name'		=> 'basename',
+		'host'		=> 'HOST',
+		'username'	=> 'USERNAME',
+		'password'	=> 'PASSWORD',
+		'name'		=> 'blog',
 	),
 	'application' => array(
 		'controllersDir'	=> __DIR__ . '/../../app/controllers/',
@@ -28,6 +22,6 @@ return new \Phalcon\Config(array(
 		'viewsDir'			=> __DIR__ . '/../../app/views/',
 		'libraryDir'		=> __DIR__ . '/../../app/library/',
 		'baseUri'			=> '/',
-		'cryptSalt'			=> 'eEA_&G&f,+v]:A&AFAdsa+71My|:+.u>/6m,$D',
+		'cryptSalt'			=> 'eEA_&G&f,+v]:A&+71My|:+.u>/6m,$D',
 	),
 ));

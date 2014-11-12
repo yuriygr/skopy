@@ -2,7 +2,7 @@
 
 ini_set('display_errors',1);
 error_reporting(E_ALL);
-
+date_default_timezone_set('Europe/Moscow');
 
 try {
 
@@ -30,11 +30,17 @@ try {
 	);
 	$loader->register();
 
+
 	/**
 	 * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
 	 */
 	$di = new \Phalcon\DI\FactoryDefault();
 
+	/**
+	 * For use in controllers
+	 */	
+	$di->setShared('config', $config);
+	
 	/**
 	 * Include the application routes
 	 */
@@ -81,9 +87,20 @@ try {
 	 * Poeben' for normal catching 404
 	 */
 	$di->set('dispatcher', function() {
+		//Create an EventsManager
 		$eventsManager = new \Phalcon\Events\Manager();
-		$eventsManager->attach("dispatch", function($event, $dispatcher, $exception) {
-			if ($event->getType() == 'beforeException') {
+		//Attach a listener
+		$eventsManager->attach("dispatch:beforeException", function($event, $dispatcher, $exception) {
+			//Handle 404 exceptions
+			if ($exception instanceof \Phalcon\Mvc\Dispatcher\Exception) {
+				$dispatcher->forward(array(
+					'controller' => 'pages',
+					'action' => 'show404'
+				));
+				return false;
+			}
+			//Alternative way, controller or action doesn't exist
+			if ($event->getType() == 'notFoundAction') {
 				switch ($exception->getCode()) {
 					case \Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
 					case \Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
@@ -91,15 +108,16 @@ try {
 							'controller' => 'pages',
 							'action' => 'show404'
 						));
-						return false;
+					return false;
 				}
 			}
 		});
 		$dispatcher = new \Phalcon\Mvc\Dispatcher();
-		// Bind the EventsManager to the Dispatcher
+		//Bind the EventsManager to the dispatcher
 		$dispatcher->setEventsManager($eventsManager);
 		return $dispatcher;
-	});
+	}, true);
+
 
 	/**
 	 * Request
@@ -142,40 +160,12 @@ try {
 	$di->set('filter', function() {
 		return new \Phalcon\Filter();
 	});
-
-	/**
-	 * Run Markdown. Used library extension Parsedown
-	 */
-	$di->set('markdown', function() {
-		$markdown = new \Phalcon\Parsedown();
-		$markdown->setBreaksEnabled(true);
-		return $markdown;
-	});
 	
-	/*
-	 * And Wakabamark for a posts.
-	 */
-	$di->set('wakabamark', function() {
-		$wakabamark = new \Phalcon\Wakabamark();
-		return $wakabamark;
-	});
-
-	/**
-	 * Set the meta value for the template
-	 * Need peremestit' nahuy
-	 */
-	Phalcon\Tag::setAutoescape(false);
-	Phalcon\Tag::setDocType(Phalcon\Tag::HTML5);
-	Phalcon\Tag::setTitle($config->site->title);
-	Phalcon\Tag::setDefault('description', '<meta name="description" content="'.$config->site->description.'">'."\n\r");
-	Phalcon\Tag::setDefault('keywords', '<meta name="keywords" content="'.$config->site->keywords.'">'."\n\r");
 	
-	Phalcon\Tag::setDefault('siteName', $config->site->name);
-	Phalcon\Tag::setDefault('siteSlogan', $config->site->slogan);
-
 	Phalcon\Mvc\Model::setup(array(
 	    'notNullValidations' => false
 	));
+
 
 	/**
 	 * Handle the request

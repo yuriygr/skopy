@@ -35,22 +35,6 @@ $router->add('/p/:action/delete', array(
 
 
 /*Страницы*/
-$router->add('/vika', array(
-	'controller' => 'pages',
-	'action' => 'vika'
-));
-$router->add('/who', array(
-	'controller' => 'pages',
-	'action' => 'who'
-));
-$router->add('/where', array(
-	'controller' => 'pages',
-	'action' => 'where'
-));
-$router->add('/work', array(
-	'controller' => 'pages',
-	'action' => 'work'
-));
 $router->add('/snake', array(
 	'controller' => 'pages',
 	'action' => 'snake'

@@ -14,7 +14,6 @@ class Users extends ModelBase
      */
     public function initialize()
     {        
-        $this->hasMany("id", "Post", "users_id");
     }
 
 }

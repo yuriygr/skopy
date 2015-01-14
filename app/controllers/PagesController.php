@@ -2,7 +2,6 @@
 
 class PagesController extends ControllerBase
 {
-
 	public function snakeAction()
 	{
 		$this->tag->prependTitle("Змейка # ");

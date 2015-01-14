@@ -11,37 +11,40 @@
 	<?= Tag::getValue('description'); ?>
 	<?= Tag::getValue('keywords'); ?>
 
-	<?php $this->assets->outputCss() ?>
+	<?php $this->assets->outputCss(); ?>
 
-	<?php $this->assets->outputJs() ?>
+	<?php $this->assets->outputJs(); ?>
 
 </head>
 <body>
 
 <header>
-	<div class="warp">
 	<div class="header-name">
-		<a href="/">Иван Иванов</a>
-	</div>
-	<ul class="header-menu">
-		<li><?= Tag::linkTo('post', 'Блог') ?></li>
-		<?php if ($this->session->has('auth_login')) { ?>
-		<li><?= Tag::linkTo('users/logout', 'Выход') ?></li>
-		<?php } ?>
-	</ul>
+		<a href="/"><?= Tag::getValue('name'); ?></a>
 	</div>
 	<ul class="header-button">
-		<?php if ($this->session->has('auth_login')) { ?>
+	<?php if ($this->session->has('auth_login')) { ?>
 		<li><a id="add" href="/p/create"><i class="fa fa-pencil"></i></a></li>
-		<?php } ?>
-		<li><a id="search" href="#"><i class="fa fa-search"></i></a></li>
+	<?php } ?>
 		<li><a id="bars" href="#"><i class="fa fa-bars"></i></a></li>
 	</ul>
+	<div class="warp">
+	<div class="header-menu">
+		<nav>
+			<li><?= Tag::linkTo('post', 'Блог'); ?></li>
+			<li><?= Tag::linkTo('snake', 'Змейка'); ?></li>
+		<?php if ($this->session->has('auth_login')) { ?>
+			<li><?= Tag::linkTo('users/logout', 'Выход'); ?></li>
+		<?php } ?>
+		</nav>
+	</div>
+	</div>
 </header>
+
 
 <?php $this->flashSession->output(); ?>
 
-<section id="post">
+<section>
 <div class="warp">
 
 	<?= $this->getContent() ?>
@@ -49,9 +52,10 @@
 </div>
 </section>
 
+
 <footer>
 <div class="warp">
-
+	<hr>
 	<p>Powered by <b>Phalcon</b></p>
 
 </div>

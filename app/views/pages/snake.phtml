@@ -78,7 +78,7 @@ function play_game(){
 			}
 		}else if (!tn.length){
 			var msg_score = document.getElementById("msg");
-			msg_score.innerHTML = "Спасибо, что проиграли в игру.<br /> Ваш счёт : <b>"+score+"</b><br /><br /><input type='button' value='Сыграть ещё?' onclick='window.location.reload();' />";
+			msg_score.innerHTML = "Спасибо, что проиграли в игру.<br /> Ваш счёт : <b>"+score+"</b><br /><br /><input type='button' class='btn' value='Сыграть ещё?' onclick='window.location.reload();' />";
 			document.getElementById("playArea").style.display = 'none';
 			window.clearInterval(interval);
 		}

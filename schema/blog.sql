@@ -1,5 +1,3 @@
--- Adminer 4.1.0 MySQL dump
-
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -11,8 +9,8 @@ CREATE TABLE `post` (
   `slug` varchar(100) NOT NULL,
   `subject` varchar(100) NOT NULL,
   `message` text NOT NULL,
-  `image` varchar(100) DEFAULT NULL,
-  `timestamp` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  `modified_in` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -30,5 +28,3 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `rang`, `login`, `password`) VALUES
 (1, 'admin',  'admin@gmail.com',  'admin',  'admin',  '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8');
-
--- 2014-11-12 11:26:32

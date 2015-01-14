@@ -2,16 +2,19 @@
 
 <?= $this->getContent() ?>
 
-<article class="post">
-	<h2  class="post-title"><?= $post->subject ?></h2>
-	<div class="post-date"><?= $post->timestamp ?></div>
-	<div class="post-text"><?= $post->message ?></div>
+<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+	<h2  class="post-title" itemprop="name"><?= Tag::linkTo(array('p/'.$post->slug, $post->subject, 'itemprop' => 'url')) ?></h2>
+	<div class="post-date" itemprop="datePublished"><?= $post->created_at ?></div>
+	<div class="post-text" itemprop="articleBody"><?= $post->message ?></div>
 </article>
-
-<div class="post-links">
-	Ссылки на соседние записи
-</div>
-
-<div class="post-comments">
-	Комментарии
+<hr>
+<div class="share">
+	<div class="share-text">Поделиться:</div>
+	<div class="share-block">			
+		<a title="Поделиться в ВКонтакте" id="vk"><i class="fa fa-vk"></i></a>
+		<a title="Поделиться в Фейсбуке" id="fb"><i class="fa fa-facebook"></i></a>
+		<a title="Поделиться в Твиттере" id="tw"><i class="fa fa-twitter"></i></a>
+		<a title="Поделиться по почте" id="po"><i class="fa fa-envelope-o"></i></a>
+	</div>
+	<div class="clearfix"></div>
 </div>

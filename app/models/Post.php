@@ -3,29 +3,35 @@
 class Post extends ModelBase
 {
 
-    public $id;
+	public $id;
 
-    public $slug;
+	public $slug;
 
-    public $subject;
+	public $subject;
 
-    public $message;
+	public $message;
 
-    public $image;
+	public $created_at;
 
-    public $timestamp;
+	public $modified_in;
 
-    /**
-     * Initializer method for model.
-     */
-    public function initialize()
-    {
-        $this->belongsTo("users_id", "Users", "id");
-    }
 
-    public function afterFetch()
-    {
-        // Форматирование даты
-        $this->timestamp = $this->formatDate($this->timestamp);
-    }
+	public function initialize()
+	{
+		// Не записываем при редактировании сюда
+		$this->skipAttributesOnUpdate(array('created_at'));
+
+		// Не записываем при создании сюда
+		$this->skipAttributesOnCreate(array('modified_in'));
+	}
+
+	// После того как выбрали данные из базы
+	public function afterFetch()
+	{	
+		if ($this->modified_in)
+			$this->modified_in = $this->formatDate($this->modified_in);
+
+		if ($this->created_at)
+			$this->created_at = $this->formatDate($this->created_at);
+	}
 }

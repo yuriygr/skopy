@@ -3,17 +3,22 @@
 <?= $this->getContent(); ?>
 
 <script type="text/javascript">
-		$(document).ready(function() {
-			$('#message').redactor();
+	$(document).ready(function() {
+		$('#message').redactor({
+			buttonSource: true,
+			plugins: ['video']
 		});
-	</script>
+	});
+</script>
 
-<?= Tag::form(array("post/create", "class" => "post-add")) ?>
-	
+<?= Tag::form(array("post/create", "class" => "addpost-form")) ?>
+
 	<input type="text" name="post_subject" id="subject" placeholder="Заголовок записи">
+
+	<input type="text" name="post_slug" id="slug" placeholder="Алиас">
 
 	<textarea name="post_message" cols="40" id="message" rows="10" placeholder="Текст"></textarea>
 
-	<input type="submit" id="submit" value="Добавить пост">
+	<?= Tag::submitButton(array('Добавить пост', 'class' => 'btn btn-half')) ?><a href="/" class="btn btn-gray btn-half">Отмена</a>
 
 <?= Tag::tagHtmlClose("form") ?>

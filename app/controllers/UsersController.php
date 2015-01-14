@@ -5,7 +5,7 @@ class UsersController extends ControllerBase
 	
 	public function indexAction()
 	{
-		
+		$this->tag->prependTitle("Авторизация # ");
 	}
 
 	public function loginAction()
@@ -35,7 +35,7 @@ class UsersController extends ControllerBase
 			$this->flashSession->success("Вы успешно вошли");
 		}
 
-		return $this->response->redirect("post/index");
+		return $this->response->redirect("post");
 	}
 
 	public function logoutAction()
@@ -43,7 +43,7 @@ class UsersController extends ControllerBase
 		$this->session->remove('auth');
 		$this->session->remove('auth_login');
 		$this->flashSession->success("Вы успешно покинули систему");
-		return $this->response->redirect("post/index");
+		return $this->response->redirect("post");
 	}
 
 }

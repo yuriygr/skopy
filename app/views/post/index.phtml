@@ -4,10 +4,10 @@
 
 <?php foreach ($posts->items as $post){ ?>
 
-<article class="post">
-	<h2  class="post-title"><?= Tag::linkTo('p/'.$post->slug, $post->subject) ?></h2>
-	<div class="post-date"><?= $post->timestamp ?></div>
-	<div class="post-text"><?= $post->message ?></div>
+<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+	<h2  class="post-title" itemprop="name"><?= Tag::linkTo(array('p/'.$post->slug, $post->subject, 'itemprop' => 'url')) ?></h2>
+	<div class="post-date" itemprop="datePublished"><?= $post->created_at ?></div>
+	<div class="post-text" itemprop="articleBody"><?= $post->message ?></div>
 </article>
 
 <?php } ?>
@@ -17,11 +17,11 @@
 
 <article class="paginator">
 	<?php if ($posts->current != $posts->first) {?>
-		<a class="paginator-item left" href="?page=<?= $posts->before; ?>"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
+		<a class="paginator-item left" href="?page=<?= $posts->before; ?>" rel="prev"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
 	<?php } ?>
 
 	<?php if ($posts->current != $posts->last) {?>
-		<a class="paginator-item right" href="?page=<?= $posts->next; ?>">Следующая <i class="fa fa-angle-double-right"></i></a>
+		<a class="paginator-item right" href="?page=<?= $posts->next; ?>" rel="next">Следующая <i class="fa fa-angle-double-right"></i></a>
 	<?php } ?>
 </article>
 

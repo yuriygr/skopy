@@ -93,11 +93,18 @@ class PostController extends ControllerBase
 
 		if ($this->request->isPost()) {
 			$post = new Post();
-			$post->slug 		= 	$this->request->getPost('post_slug') ?
-									Slug::generate($this->request->getPost('post_slug')) :
-									Slug::generate($this->request->getPost('post_subject'));
-			$post->subject 		= 	$this->request->getPost('post_subject');
-			$post->message 		=	$this->request->getPost('post_message');
+			// Обрабатываем Алиас
+			$post->slug		=	$this->request->getPost('post_slug');
+			$post->slug		=	$this->filter->sanitize($post->slug, 'striptags');
+			// Обрабатываем Заголовок
+			$post->subject		=	$this->request->getPost('post_subject');
+			$post->subject		=	$this->filter->sanitize($post->subject, 'striptags');
+			// Создаём Алиас
+			$post->slug		=	$post->slug ?
+							Slug::generate($post->slug) :
+							Slug::generate($post->subject);
+
+			$post->message		=	$this->request->getPost('post_message');
 			$post->created_at 	= 	time();
 
 			if (!$post->save()) {
@@ -149,11 +156,18 @@ class PostController extends ControllerBase
 			$id = $this->request->getPost('post_id');
 			
 			$post = Post::findFirst($id);
-			$post->slug 		= 	$this->request->getPost('post_slug') ?
-									Slug::generate($this->request->getPost('post_slug')) :
-									Slug::generate($this->request->getPost('post_subject'));
-			$post->subject 		= 	$this->request->getPost('post_subject');
-			$post->message 		=	$this->request->getPost('post_message');
+			// Обрабатываем Алиас
+			$post->slug		=	$this->request->getPost('post_slug');
+			$post->slug		=	$this->filter->sanitize($post->slug, 'striptags');
+			// Обрабатываем Заголовок
+			$post->subject		=	$this->request->getPost('post_subject');
+			$post->subject		=	$this->filter->sanitize($post->subject, 'striptags');
+			// Создаём Алиас
+			$post->slug		=	$post->slug ?
+							Slug::generate($post->slug) :
+							Slug::generate($post->subject);
+
+			$post->message		=	$this->request->getPost('post_message');
 			$post->modified_in 	= 	time();
 
 			if (!$post->update()) {

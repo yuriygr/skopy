@@ -1,6 +1,6 @@
-Poppy-blog
+Skopy
 ==========
-Poppy-blog - это революционный движок блога на фрейморвке Phalcon.
+Skopy - это простой движок блога на фрейморвке Phalcon.
 Для работы блога **необходимо скачать и установить Phalcon** на сервер. Инструкции можно прочитать [тут](http://phalconphp.com/en/download).
 
 Get Started
@@ -11,7 +11,7 @@ Get Started
 Для запуска приложения необходимы:
 
 * PHP >= 5.3.6
-* Apache Web Server с включёным mod_rewrite*
+* Apache Web Server с включёным mod_rewrite или NGINX.
 * Последняя версия Phalcon Framework
 
 ### Конфигурация

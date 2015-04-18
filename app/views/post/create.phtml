@@ -4,21 +4,31 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#message').redactor({
+		$('#text').redactor({
 			buttonSource: true,
-			plugins: ['video']
+			plugins: ['video', 'readmore']
 		});
 	});
 </script>
 
-<?= Tag::form(array("post/create", "class" => "addpost-form")) ?>
+<?= Tag::form(array("post/create", "class" => "form addpost-form")) ?>
+	<p>
+		<label for="subject">Тема</label>
+		<input type="text" name="post_subject" id="subject" placeholder="Заголовок записи" class="input">
+	</p>
+	<p>
+		<label for="slug">Алиас</label>
+		<input type="text" name="post_slug" id="slug" placeholder="Алиас" class="input">
+	</p>
+	<p>
+		<label for="text">Сообщение</label>
+		<textarea name="post_text" cols="40" id="text" rows="10" placeholder="Текст"></textarea>
+	</p>
 
-	<input type="text" name="post_subject" id="subject" placeholder="Заголовок записи">
+	<?= Tag::submitButton(array('Добавить пост', 'name' => 'post_add', 'class' => 'btn')) ?>
+	<?= Tag::submitButton(array('Черновик', 'name' => 'post_draft', 'class' => 'btn btn-gray')) ?>
+	<a href="/" class="btn btn-cancle">Отмена</a>
 
-	<input type="text" name="post_slug" id="slug" placeholder="Алиас">
-
-	<textarea name="post_message" cols="40" id="message" rows="10" placeholder="Текст"></textarea>
-
-	<?= Tag::submitButton(array('Добавить пост', 'class' => 'btn btn-half')) ?><a href="/" class="btn btn-gray btn-half">Отмена</a>
+	<hr>
 
 <?= Tag::tagHtmlClose("form") ?>

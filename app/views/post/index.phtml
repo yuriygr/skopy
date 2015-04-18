@@ -2,25 +2,20 @@
 
 <?= $this->getContent() ?>
 
-<?php foreach ($posts->items as $post){ ?>
-
-<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
-	<h2  class="post-title" itemprop="name"><?= Tag::linkTo(array('p/'.$post->slug, $post->subject, 'itemprop' => 'url')) ?></h2>
-	<div class="post-date" itemprop="datePublished"><?= $post->created_at ?></div>
-	<div class="post-text" itemprop="articleBody"><?= $post->message ?></div>
-</article>
-
-<?php } ?>
+<?php
+	foreach ($posts->items as $post)
+		$this->partial("partial/post", array('post' => $post, 'type' => 'short'))
+?>
 
 
-<?php if ($posts->first != $posts->total_pages) {?>
+<?php if ($posts->first != $posts->total_pages) { ?>
 
 <article class="paginator">
-	<?php if ($posts->current != $posts->first) {?>
+	<?php if ($posts->current != $posts->first) { ?>
 		<a class="paginator-item left" href="?page=<?= $posts->before; ?>" rel="prev"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
 	<?php } ?>
 
-	<?php if ($posts->current != $posts->last) {?>
+	<?php if ($posts->current != $posts->last) { ?>
 		<a class="paginator-item right" href="?page=<?= $posts->next; ?>" rel="next">Следующая <i class="fa fa-angle-double-right"></i></a>
 	<?php } ?>
 </article>

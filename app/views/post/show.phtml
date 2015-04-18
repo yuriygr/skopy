@@ -2,19 +2,21 @@
 
 <?= $this->getContent() ?>
 
-<article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
-	<h2  class="post-title" itemprop="name"><?= Tag::linkTo(array('p/'.$post->slug, $post->subject, 'itemprop' => 'url')) ?></h2>
-	<div class="post-date" itemprop="datePublished"><?= $post->created_at ?></div>
-	<div class="post-text" itemprop="articleBody"><?= $post->message ?></div>
-</article>
+<?php $this->partial("partial/full_post", array('post' => $post)) ?>
 <hr>
-<div class="share">
-	<div class="share-text">Поделиться:</div>
-	<div class="share-block">			
-		<a title="Поделиться в ВКонтакте" id="vk"><i class="fa fa-vk"></i></a>
-		<a title="Поделиться в Фейсбуке" id="fb"><i class="fa fa-facebook"></i></a>
-		<a title="Поделиться в Твиттере" id="tw"><i class="fa fa-twitter"></i></a>
-		<a title="Поделиться по почте" id="po"><i class="fa fa-envelope-o"></i></a>
-	</div>
-	<div class="clearfix"></div>
+<?php $this->partial("partial/share") ?>
+<hr>
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+		var disqus_identifier = '<?= $post->id; ?>';
+		var disqus_shortname = 'ТВОЙ_ДИСКУС_АЙДИ';
+		(function() {
+			var dsq = document.createElement('script');
+			dsq.type = 'text/javascript';
+			dsq.async = true;
+			dsq.src = '//'+disqus_shortname+'.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+	</script>	
 </div>

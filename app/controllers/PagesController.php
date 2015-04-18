@@ -1,7 +1,15 @@
 <?php
 
+use \Phalcon\Utils\Slug as Slug; 
+
 class PagesController extends ControllerBase
 {
+
+	public function aboutAction()
+	{
+		$this->tag->prependTitle("Обо мне # ");
+	}
+	
 	public function snakeAction()
 	{
 		$this->tag->prependTitle("Змейка # ");

@@ -7,7 +7,6 @@ class PostController extends ControllerBase
 
 	public function beforeExecuteRoute($dispatcher)
 	{
-		
 		// Действия, которые защищены законом
 		$restricted = array('create', 'edit', 'update', 'delete');
 
@@ -27,8 +26,14 @@ class PostController extends ControllerBase
 
 	public function indexAction()
 	{
+		if ($this->session->has('auth_login')) {
+			$is_draft = "is_draft = 0 OR is_draft = 1";
+		} else {
+			$is_draft = "is_draft = 0";
+		}
 		$parameter = array(
-			'order' => 'id DESC'
+			$is_draft,
+			'order' => 'created_at DESC'
 		);
 		$currentPage = $this->request->getQuery('page', 'int');
 		if ($currentPage <= 0) $currentPage = 1;
@@ -78,8 +83,21 @@ class PostController extends ControllerBase
 		}
 
 		$this->view->setVar('post', $post);
-		
+
+		// Чистим текст
+		$string = strip_tags($post->short_text);
+		$string = preg_replace('/\s+$/m', ' ', $string);
+		$string = str_replace("\n",'', $string);
+		$string = preg_replace('/ {2,}/',' ',$string);
+		$string = substr($string, 0, 300);
+		$string = rtrim($string, "!,.-");
+		$string = ltrim($string);
+		$string = substr($string, 0, strrpos($string, ' '));
+		$string = preg_replace('#"(.*?)"#', '«$1»', $string);
+		$string = $string.'...';
+
 		$this->tag->prependTitle($post->subject . " # ");
+		$this->tag->setDescription($string);
 	}
 
 	public function createAction()
@@ -87,25 +105,44 @@ class PostController extends ControllerBase
 		$this->tag->prependTitle("Создание записи # ");
 
 		$this->assets
-			->addJs('js/redactor.min.js')
-			->addJs('js/video.js')
-			->addCss('css/redactor.css');
+			->addJs('vendors/redactor/redactor.min.js')
+			->addJs('vendors/redactor/video.js')
+			->addJs('vendors/redactor/readmore.js')
+			->addCss('vendors/redactor/redactor.css');
 
 		if ($this->request->isPost()) {
 			$post = new Post();
+
 			// Обрабатываем Алиас
-			$post->slug		=	$this->request->getPost('post_slug');
-			$post->slug		=	$this->filter->sanitize($post->slug, 'striptags');
+			$post->slug			=	$this->request->getPost('post_slug');
+			$post->slug			=	$this->filter->sanitize($post->slug, 'striptags');
 			// Обрабатываем Заголовок
 			$post->subject		=	$this->request->getPost('post_subject');
 			$post->subject		=	$this->filter->sanitize($post->subject, 'striptags');
 			// Создаём Алиас
-			$post->slug		=	$post->slug ?
-							Slug::generate($post->slug) :
-							Slug::generate($post->subject);
-
-			$post->message		=	$this->request->getPost('post_message');
-			$post->created_at 	= 	time();
+			$post->slug			=	$post->slug ?
+									Slug::generate($post->slug) :
+									Slug::generate($post->subject);
+			// Обрабатываем текст
+			$text = $this->request->getPost('post_text');
+			if ( preg_match( '/<hr id="readmore">/', $text) ) {
+				$text = explode( '<hr id="readmore">', $text, 2 );
+				$post->short_text	=	$text['0'];
+				$post->full_text	=	$text['1'];
+			} else {
+				$post->short_text	=	$text;
+				$post->full_text	=	null;
+			}
+			// Определяем дату создания
+			$post->created_at 		=	time();
+			// Определяем тип поста
+			if ( $this->request->getPost('post_add') ) {
+				$post->is_draft		=	0;
+			} elseif ( $this->request->getPost('post_draft') ) {
+				$post->is_draft		=	1;
+			} else {
+				$post->is_draft		=	0;
+			}
 
 			if (!$post->save()) {
 				foreach ($post->getMessages() as $message) {
@@ -145,9 +182,10 @@ class PostController extends ControllerBase
 		$this->tag->prependTitle($post->subject . " - Редактирование # ");
 
 		$this->assets
-			->addJs('js/redactor.min.js')
-			->addJs('js/video.js')
-			->addCss('css/redactor.css');
+			->addJs('vendors/redactor/redactor.min.js')
+			->addJs('vendors/redactor/video.js')
+			->addJs('vendors/redactor/readmore.js')
+			->addCss('vendors/redactor/redactor.css');
 	}
 
 	public function updateAction()
@@ -156,19 +194,37 @@ class PostController extends ControllerBase
 			$id = $this->request->getPost('post_id');
 			
 			$post = Post::findFirst($id);
+
 			// Обрабатываем Алиас
-			$post->slug		=	$this->request->getPost('post_slug');
-			$post->slug		=	$this->filter->sanitize($post->slug, 'striptags');
+			$post->slug			=	$this->request->getPost('post_slug');
+			$post->slug			=	$this->filter->sanitize($post->slug, 'striptags');
 			// Обрабатываем Заголовок
 			$post->subject		=	$this->request->getPost('post_subject');
 			$post->subject		=	$this->filter->sanitize($post->subject, 'striptags');
 			// Создаём Алиас
-			$post->slug		=	$post->slug ?
-							Slug::generate($post->slug) :
-							Slug::generate($post->subject);
-
-			$post->message		=	$this->request->getPost('post_message');
-			$post->modified_in 	= 	time();
+			$post->slug			=	$post->slug ?
+									Slug::generate($post->slug) :
+									Slug::generate($post->subject);
+			// Обрабатываем текст
+			$text = $this->request->getPost('post_text');
+			if ( preg_match( '/<hr id="readmore">/', $text) ) {
+				$text = explode( '<hr id="readmore">', $text, 2 );
+				$post->short_text	=	$text['0'];
+				$post->full_text	=	$text['1'];
+			} else {
+				$post->short_text	=	$text;
+				$post->full_text	=	null;
+			}			
+			// Определяем дату изменения
+			$post->modified_in 		= 	time();
+			// Определяем тип поста
+			if ( $this->request->getPost('post_add') ) {
+				$post->is_draft		=	0;
+			} elseif ( $this->request->getPost('post_draft') ) {
+				$post->is_draft		=	1;
+			} else {
+				$post->is_draft		=	0;
+			}			
 
 			if (!$post->update()) {
 				foreach ($post->getMessages() as $message) {

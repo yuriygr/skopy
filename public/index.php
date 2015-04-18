@@ -55,6 +55,7 @@ try {
 	 */
 	$di->set('url', function() use ($config) {
 		$url = new \Phalcon\Mvc\Url();
+		// Устанавливаем базовый путь
 		$url->setBaseUri($config->application->baseUri);
 		return $url;
 	});
@@ -64,7 +65,9 @@ try {
 	 */
 	$di->set('view', function() use ($config) {
 		$view = new \Phalcon\Mvc\View();
+		// Устанавливаем директорию с шаблонами по умочанию
 		$view->setViewsDir($config->application->viewsDir);
+
 		return $view;
 	});
 
@@ -161,7 +164,13 @@ try {
 		return new \Phalcon\Filter();
 	});
 	
-	
+	/**
+	 * New Tag
+	 */	
+	$di->set('tag', function() {
+		return new \Phalcon\NTag();
+	});
+
 	Phalcon\Mvc\Model::setup(array(
 	    'notNullValidations' => false
 	));

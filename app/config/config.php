@@ -4,17 +4,17 @@ return new \Phalcon\Config(array(
 	'site' => array(
 		// Мета данные
 		'title'			=> 'Иван Иванов',
-		'description'	=> 'Личный бложик Ивана',
-		'keywords'		=> 'Блог, Иван',
+		'description'	=> 'Личный блог Ивана',
+		'keywords'		=> 'Иван, Иванов, Блог, Skopy',
 
 		'postLimit'		=> '9',
 	),	
 	'database' => array(
 		'adapter'	=> 'Mysql',
-		'host'		=> 'HOST',
+		'host'		=> 'localhost',
 		'username'	=> 'USERNAME',
 		'password'	=> 'PASSWORD',
-		'name'		=> 'blog',
+		'name'		=> 'BASENAME',
 	),
 	'application' => array(
 		'controllersDir'	=> __DIR__ . '/../../app/controllers/',
@@ -22,6 +22,6 @@ return new \Phalcon\Config(array(
 		'viewsDir'			=> __DIR__ . '/../../app/views/',
 		'libraryDir'		=> __DIR__ . '/../../app/library/',
 		'baseUri'			=> '/',
-		'cryptSalt'			=> 'eEA_&G&f,+v]:A&+71My|:+.u>/6m,$D',
+		'cryptSalt'			=> 'eEA_&G&*(^S&*)]:A&+71My|:+.u>/6m,$D',
 	),
 ));

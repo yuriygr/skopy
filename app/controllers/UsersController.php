@@ -6,6 +6,8 @@ class UsersController extends ControllerBase
 	public function indexAction()
 	{
 		$this->tag->prependTitle("Авторизация # ");
+		if ($this->session->has('auth_login'))
+			return $this->response->redirect("post");
 	}
 
 	public function loginAction()
@@ -13,11 +15,16 @@ class UsersController extends ControllerBase
 
 		if ($this->request->isPost()) {
 
+			$login 		= 	$this->request->getPost("login");
+			$login		=	$this->filter->sanitize($login, 'striptags');
+			$password 	= 	$this->request->getPost("password");
+			$password	=	$this->filter->sanitize($password, 'striptags');
+
 			$user = Users::findFirst(array(
 				'login = :login: and password = :password:',
 				'bind' => array(
-					'login' => $this->request->getPost("login"),
-					'password' => sha1($this->request->getPost("password"))
+					'login' => $login,
+					'password' => sha1($password)
 				)
 			));
 

@@ -6,19 +6,21 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="HandheldFriendly" content="true">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-	<?= Tag::getTitle(); ?>
-	<?= Tag::getValue('description'); ?>
-	<?= Tag::getValue('keywords'); ?>
+	<?= $this->tag->getTitle(); ?>
+	<?= $this->tag->getDescription(); ?>
+	<?= $this->tag->getKeywords(); ?>
 
-	<?php $this->assets->outputCss(); ?>
-
-	<?php $this->assets->outputJs(); ?>
+	<?= $this->assets->outputCss(); ?>
+	<?= $this->assets->outputJs(); ?>
 
 </head>
 <body>
 
-<header>
+<header id="header">
+<div class="warp">
+
 	<div class="header-name">
 		<a href="/"><?= Tag::getValue('name'); ?></a>
 	</div>
@@ -27,20 +29,19 @@
 		<li><a id="add" href="/p/create"><i class="fa fa-pencil"></i></a></li>
 	<?php } ?>
 		<li><a id="bars" href="#"><i class="fa fa-bars"></i></a></li>
+	<?php if ($this->session->has('auth_login')) { ?>
+		<li><a href="/users/logout"><i class="fa fa-sign-out"></i></a></li>
+	<?php } ?>
 	</ul>
-	<div class="warp">
-	<div class="header-menu">
-		<nav>
-			<li><?= Tag::linkTo('post', 'Блог'); ?></li>
+	<div class="header-menu" role="navigation">
+		<ul>
+			<li><?= Tag::linkTo('about', 'Обо мне'); ?></li>
 			<li><?= Tag::linkTo('snake', 'Змейка'); ?></li>
-		<?php if ($this->session->has('auth_login')) { ?>
-			<li><?= Tag::linkTo('users/logout', 'Выход'); ?></li>
-		<?php } ?>
-		</nav>
+		</ul>
 	</div>
-	</div>
-</header>
 
+</div>
+</header>
 
 <?php $this->flashSession->output(); ?>
 
@@ -53,11 +54,11 @@
 </section>
 
 
-<footer>
+<footer id="footer">
 <div class="warp">
-	<hr>
-	<p>Powered by <b>Phalcon</b></p>
 
+	<p>Powered by <b>Skopy</b> <a href="#" id="rise"><i class="fa fa-angle-up"></i></a></p>
+	
 </div>
 </footer>
 

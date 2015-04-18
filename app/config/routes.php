@@ -7,41 +7,24 @@ $router->add('/', array(
 	'action' => 'index'
 ));
 
-
-/*Посты*/
-$router->add('/p/', array(
-	'controller' => 'post',
-	'action' => 'index'
-));
-$router->add('/p/:action', array(
-	'controller' => 'post',
-	'action' => 'show',
-	'slug' => 1
-));
-$router->add('/p/create', array(
-	'controller' => 'post',
-	'action' => 'create'
-));
-$router->add('/p/:action/edit', array(
-	'controller' => 'post',
-	'action' => 'edit',
-	'slug' => 1
-));
-$router->add('/p/:action/delete', array(
-	'controller' => 'post',
-	'action' => 'delete',
-	'slug' => 1
-));
+// Post
+$blog = new \Phalcon\Mvc\Router\Group(array( 'controller' => 'post' ));
+$blog->setPrefix('/p');
+$blog->add('', array( 'action' => 'index' ));
+$blog->add('/:action', array( 'action' => 'show', 'slug' => 1 ));
+$blog->add('/create', array( 'action' => 'create' ));
+$blog->add('/:action/edit', array( 'action' => 'edit', 'slug' => 1 ));
+$blog->add('/:action/delete', array( 'action' => 'delete', 'slug' => 1 ));
+$router->mount($blog);
 
 
-/*Страницы*/
-$router->add('/snake', array(
-	'controller' => 'pages',
-	'action' => 'snake'
-));
-
+// Pages
+$pages = new \Phalcon\Mvc\Router\Group(array( 'controller' => 'pages' ));
+$pages->add('/about', array( 'action' => 'about' ));
+$pages->add('/snake', array( 'action' => 'snake' ));
+$router->mount($pages);
 
 $router->notFound(array(
-	'controller' => 'error',
+	'controller' => 'pages',
 	'action' => 'show404'
 ));

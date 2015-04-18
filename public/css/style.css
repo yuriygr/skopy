@@ -187,114 +187,6 @@ section {
 }
 
 
-
-/*
-	Portfolio
-	=========================================================
-*/
-.portfolio-list {
-	overflow: hidden;
-	text-align: center;
-}
-.portfolio-list li {
-	display: inline-block;
-	width: 25%;
-	max-width: 400px;
-	text-align: left;
-}
-.portfolio-list li a {
-	position: relative;
-	display: inline-block;
-}
-.portfolio-list li img {
-	width: 100%;
-	vertical-align: middle;
-}
-.excerpt {
-	background-color: rgba(0, 0, 0, 0.8);
-	background-repeat: no-repeat;
-	background-position: 90% 85%;
-	color: #fff;
-	display: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	padding: 1em;
-}
-.excerpt h3 {
-	font-size: 16px;
-	font-weight: bold;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.278431);
-	margin: 0;
-	padding: 0;
-	margin-bottom: 7px;
-	padding-bottom: 7px;
-}
-.portfolio-list li a:hover .excerpt {
-	display: inline-block;
-}
-.portfolio-item {
-	text-align: center;
-}
-.portfolio-item h1 {
-	font-size: 25px;
-	line-height: 34px;
-}
-.portfolio-item p {
-
-}
-
-
-/*
-	About
-	=========================================================
-*/
-.about {
-	text-align: center;
-	padding: 0 0 30px 0;
-}
-.about img {
-	border-radius: 50%;
-	height: 200px;
-	margin: 0 auto 10px auto;
-	width: 200px;
-}
-.about p {
-	font-size: 18px;
-	margin-bottom: 25px;
-}
-
-
-/*
-	Contact
-	=========================================================
-*/
-.contact {
-	width: 100%;
-	padding: 0 0 25px 0;
-	overflow: hidden;
-}
-.contact-label {
-	color: #999;
-	font-size: 20px;
-	margin: 0 0 10px 0;
-}
-.contact-content {
-	color: #6A7179;
-	font-size: 30px;
-}
-.contact-note {
-	color: #999;
-	font-size: 14px;
-	margin: 10px 0 0 0;
-}
-.contact-content.social a {
-	color: #6A7179;
-}
-
-
 /*
 	Footer
 	=========================================================
@@ -500,7 +392,6 @@ select:focus {
 /*Квадрат*/
 @media screen and (max-width: 1125px){
 	.warp { width: 800px; }
-	.portfolio-list li { width: 33.33%; }
 }
 /*Планшет*/
 @media screen and (max-width: 845px){
@@ -533,8 +424,6 @@ select:focus {
 		height: 213px;
 		width: 380px;
 	}
-	.portfolio-list li { width: 50%; }
-	.excerpt { display: none!important; }
 }
 /*Телефоны*/
 @media screen and (max-width: 430px){
@@ -546,7 +435,4 @@ select:focus {
 		height: 168px;
 		width: 300px;
 	}
-	.contact-label { font-size: 20px; }
-	.contact-content { font-size: 23px; }
-	.contact-note { font-size: 14px; }
 }

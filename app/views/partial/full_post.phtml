@@ -3,7 +3,13 @@
 <?= $this->getContent() ?>
 
 <article class="post" id="post-<?= $post->id ?>" itemscope="" itemtype="http://schema.org/BlogPosting">
-	<h1  class="post-title" itemprop="name"><?= Tag::linkTo(array('p/'.$post->slug, $post->subject, 'itemprop' => 'url')) ?></h1>
+	<h1  class="post-title" itemprop="name"><?=
+		Tag::linkTo([
+			$this->url->get([ 'for' => 'post-link', 'slug' => $post->slug ]),
+			$post->subject,
+			'itemprop' => 'url'
+		])
+	?></h1>
 	<div class="post-item"><?= $post->the_date() ?></div>
 	<div class="post-text"  itemprop="articleBody"><?= $post->the_content('full') ?></div>
 </article>

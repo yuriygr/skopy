@@ -1,3 +1,5 @@
+[![Phalconist](http://phalconist.com/yuriygr/skopy/default.svg)](http://phalconist.com/yuriygr/skopy)
+
 Skopy
 ==========
 Skopy - это простой движок блога на фрейморвке Phalcon.

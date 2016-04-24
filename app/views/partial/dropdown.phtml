@@ -1,0 +1,19 @@
+<?php use Phalcon\Tag as Tag; ?>
+
+<div class="dropdown">
+	<div class="dropdown_toggler">
+		<i class="fa fa-angle-down"></i>
+	</div>
+	<div class="dropdown_popup">
+		<?
+			echo Tag::linkTo([
+				$this->url->get([ 'for' => 'post-edit', 'slug' => $post->slug ]),
+				'<i class="fa fa-wrench"></i> Изменить'
+			]);
+			echo Tag::linkTo([
+				$this->url->get([ 'for' => 'post-delete', 'slug' => $post->slug ]),
+				'<i class="fa fa-trash"></i> Удалить'
+			]);
+		?>
+	</div>
+</div>

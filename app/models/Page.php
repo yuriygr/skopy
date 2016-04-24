@@ -2,26 +2,22 @@
 
 use \Phalcon\Utils\Timeformat as Timeformat;
 
-class Post extends ModelBase
+class Page extends ModelBase
 {
 
 	public $id;
 
 	public $slug;
 
-	public $subject;
+	public $name;
 
 	public $type;
 
-	public $short_text;
-
-	public $full_text;
+	public $text;
 
 	public $created_at;
 
 	public $modified_in;
-
-	public $is_draft;
 
 	public $is_comment;
 
@@ -56,18 +52,9 @@ class Post extends ModelBase
 			$this->modified_in = Timeformat::generate($this->modified_in);
 	}
 
-	public function getContent($type = "short")
+	public function getContent()
 	{
-		if ($type == "short") {
-			return $this->short_text;
-		}
-		elseif ($type == "full") {
-			$text = $this->short_text;
-			if ( isset($this->full_text) )
-				$text .= '<hr id="readmore">' . $this->full_text;
-
-			return $text;
-		}
+		return $this->text;
 	}
 
 	public function getDate()

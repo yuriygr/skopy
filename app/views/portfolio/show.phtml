@@ -1,0 +1,17 @@
+<?php use Phalcon\Tag as Tag; ?>
+
+<?= $this->getContent() ?>
+
+<div class="portfolio-item">
+	<?= $this->tag->image([ $portfolio->image, "alt" => $portfolio->name ]);?>
+	<h1><?= $portfolio->name; ?></h1>
+	<p><?= $portfolio->intro; ?></p>
+	<? if ($portfolio->link) echo Tag::linkTo([
+		$portfolio->link,
+		'Посмотреть сайт',
+		'target' => '_blank', 'class' => 'btn', 'local' => FALSE ]); ?>
+	<hr>
+	<?php $this->partial("partial/share") ?>
+</div>
+<hr>
+<?php $this->partial("partial/comments", ['identifier' => 'portfolio-' . $portfolio->id]) ?>

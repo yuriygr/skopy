@@ -6,29 +6,18 @@ date_default_timezone_set('Europe/Moscow');
 
 try {
 
+	define('APP_DIR', realpath('../app'));
+
 	/**
 	 * Read the configuration
 	 */
-	$config = include(__DIR__.'/../app/config/config.php');
-
-	$loader = new \Phalcon\Loader();
+	include(APP_DIR . '/config/config.php');
 
 	/**
-	 * We're a registering a set of directories taken from the configuration file. And namespaces too
+	 * Read auto-loader
 	 */
-	$loader->registerDirs(
-		array(
-			$config->application->controllersDir,
-			$config->application->modelsDir,
-			$config->application->libraryDir,
-		)
-	);
-	$loader->registerNamespaces(
-		array(
-			'Phalcon' => $config->application->libraryDir
-		)
-	);
-	$loader->register();
+	include(APP_DIR . '/config/loader.php');
+
 
 
 	/**
@@ -45,8 +34,8 @@ try {
 	 * Include the application routes
 	 */
 	$di->set('router', function() {
-		$router = new \Phalcon\Mvc\Router();
-		include(__DIR__.'/../app/config/routes.php');
+		$router = new \Phalcon\Mvc\Router(false);
+		include(APP_DIR . '/config/routes.php');
 		return $router;
 	});
 
@@ -65,9 +54,21 @@ try {
 	 */
 	$di->set('view', function() use ($config) {
 		$view = new \Phalcon\Mvc\View();
+		
 		// Устанавливаем директорию с шаблонами по умочанию
 		$view->setViewsDir($config->application->viewsDir);
 
+		$view->registerEngines(array(
+			'.volt' => function($view, $di) use ($config) {
+				$volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+				$volt->setOptions(array(
+					'compiledPath' => $config->application->cacheDir . 'volt/',
+					'compiledSeparator' => '_',
+				));
+				return $volt;
+			},
+			'.phtml' => 'Phalcon\Mvc\View\Engine\Php' // Generate Template files uses PHP itself as the template engine
+		));
 		return $view;
 	});
 
@@ -75,52 +76,41 @@ try {
 	 * Database connection is created based in the parameters defined in the configuration file
 	 */
 	$di->set('db', function() use ($config) {
-		return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+		$db = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
 			'host'		=> $config->database->host,
 			'username'	=> $config->database->username,
 			'password'	=> $config->database->password,
 			'dbname' 	=> $config->database->name,
-			'options'	=> array(
-				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-			)
+			'charset'	=> $config->database->charset
 		));
+		return $db;
 	});
 
 	/*
 	 * Poeben' for normal catching 404
 	 */
 	$di->set('dispatcher', function() {
-		//Create an EventsManager
-		$eventsManager = new \Phalcon\Events\Manager();
-		//Attach a listener
-		$eventsManager->attach("dispatch:beforeException", function($event, $dispatcher, $exception) {
-			//Handle 404 exceptions
-			if ($exception instanceof \Phalcon\Mvc\Dispatcher\Exception) {
-				$dispatcher->forward(array(
-					'controller' => 'pages',
-					'action' => 'show404'
-				));
-				return false;
-			}
-			//Alternative way, controller or action doesn't exist
-			if ($event->getType() == 'notFoundAction') {
+		$evManager = new \Phalcon\Events\Manager;
+		$evManager->attach(
+			"dispatch:beforeException",
+			function($event, $dispatcher, $exception) {
 				switch ($exception->getCode()) {
-					case \Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
-					case \Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
-						$dispatcher->forward(array(
-							'controller' => 'pages',
-							'action' => 'show404'
-						));
-					return false;
+					case \Phalcon\Mvc\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+					case \Phalcon\Mvc\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+						$dispatcher->forward(
+							array(
+								'controller' => 'page',
+								'action'     => 'show404',
+							)
+						);
+						return false;
 				}
 			}
-		});
+		);
 		$dispatcher = new \Phalcon\Mvc\Dispatcher();
-		//Bind the EventsManager to the dispatcher
-		$dispatcher->setEventsManager($eventsManager);
+		$dispatcher->setEventsManager($evManager);
 		return $dispatcher;
-	}, true);
-
+	});
 
 	/**
 	 * Request
@@ -169,6 +159,13 @@ try {
 	 */	
 	$di->set('tag', function() {
 		return new \Phalcon\NTag();
+	});
+
+	/**
+	 * Open Graph
+	 */	
+	$di->set('og', function() {
+		return new \Phalcon\OpenGraph();
 	});
 
 	Phalcon\Mvc\Model::setup(array(

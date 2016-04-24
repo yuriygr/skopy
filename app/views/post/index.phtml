@@ -1,23 +1,32 @@
 <?php use Phalcon\Tag as Tag; ?>
 
-<?= $this->getContent() ?>
-
 <?php
 	foreach ($posts->items as $post)
-		$this->partial("partial/post", array('post' => $post, 'type' => 'short'))
+		$this->partial("partial/post")
 ?>
 
 
 <?php if ($posts->first != $posts->total_pages) { ?>
 
-<article class="paginator">
-	<?php if ($posts->current != $posts->first) { ?>
-		<a class="paginator-item left" href="?page=<?= $posts->before; ?>" rel="prev"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
-	<?php } ?>
+<div class="paginator">
+<?php
+	if ($posts->current != $posts->first)
+		echo Tag::linkTo([
+			'?page='.$posts->before,
+			'<i class="fa fa-angle-double-left"></i> Предыдущая',
+			'class' => 'paginator-item left',
+			'rel' => 'prev'
+		]);
 
-	<?php if ($posts->current != $posts->last) { ?>
-		<a class="paginator-item right" href="?page=<?= $posts->next; ?>" rel="next">Следующая <i class="fa fa-angle-double-right"></i></a>
-	<?php } ?>
-</article>
+
+	if ($posts->current != $posts->last)
+		echo Tag::linkTo([
+			'?page='.$posts->next,
+			'Следующая <i class="fa fa-angle-double-right"></i>',
+			'class' => 'paginator-item right',
+			'rel' => 'next'
+		]);
+?>
+</div>
 
 <?php } ?>

@@ -1,0 +1,30 @@
+<?php use Phalcon\Tag as Tag; ?>
+
+<?= $this->getContent() ?>
+
+<ul class="portfolio-list">
+<?php foreach ($portfolios->items as $portfolio) { ?><li>
+	<a href="<?= $portfolio->link; ?>">
+		<?= $this->tag->image(array($portfolio->image, "alt" => $portfolio->name));?>
+		<div class="excerpt">
+			<h3><?= $portfolio->name; ?></h3>
+			<p><?= $portfolio->intro; ?></p>
+		</div>
+	</a>
+</li><?php } ?> 
+</ul>
+
+
+<?php if ($portfolios->first != $portfolios->total_pages) { ?>
+
+<article class="paginator">
+	<?php if ($portfolios->current != $portfolios->first) { ?>
+		<a class="paginator-item left" href="?page=<?= $portfolios->before; ?>" rel="prev"><i class="fa fa-angle-double-left"></i> Предыдущая</a>
+	<?php } ?>
+
+	<?php if ($portfolios->current != $portfolios->last) { ?>
+		<a class="paginator-item right" href="?page=<?= $portfolios->next; ?>" rel="next">Следующая <i class="fa fa-angle-double-right"></i></a>
+	<?php } ?>
+</article>
+
+<?php } ?>

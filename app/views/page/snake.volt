@@ -1,4 +1,4 @@
-<?php echo $this->getContent() ?>
+{{ content() }}
 
 <style type="text/css">
 canvas {border:5px dotted #ddd;}
@@ -108,3 +108,21 @@ function play_game(){
 <div id="msg"></div>
 <canvas id="playArea" width="790" height="350">Sorry your browser does not support HTML5</canvas><br>
 <script type="text/javascript">play_game();</script>
+
+<br>
+<br>
+<hr>
+<h1>Заголовок 1 уровня</h1>
+<h2>Заголовок 2 уровня</h2>
+<h3>Заголовок 3 уровня</h3>
+<h4>Заголовок 4 уровня</h4>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur scelerisque lorem, id posuere leo accumsan a. Proin et malesuada purus, nec sagittis sapien. In scelerisque <i>fringilla ultrices</i>. Etiam ut dictum ligula. Aliquam ac tortor vel sem venenatis condimentum. Quisque eu nulla leo. Suspendisse aliquet enim at rutrum laoreet. Pellentesque id nulla ligula. In odio sem, porttitor non tellus eget, pulvinar molestie tortor. Nullam non orci vitae ligula egestas placerat ut a ipsum. Aenean semper <b>lorem</b> eget orci congue lacinia.</p>
+<hr>
+<p>Lorem ipsum dolor sit amet, consectetur <u>adipiscing elit</u>. Aliquam efficitur scelerisque lorem, id posuere leo accumsan a. Proin et malesuada purus, nec sagittis sapien. In scelerisque fringilla ultrices. Etiam ut dictum ligula. Aliquam ac tortor vel sem venenatis condimentum. Quisque eu nulla leo. Suspendisse aliquet enim at rutrum laoreet. Pellentesque id nulla ligula. In odio sem, porttitor non tellus eget, pulvinar molestie tortor. Nullam non orci vitae ligula egestas placerat ut a ipsum. Aenean semper lorem eget orci congue lacinia.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam efficitur scelerisque lorem, id posuere leo accumsan a. Proin et malesuada purus, nec sagittis sapien. In scelerisque fringilla ultrices. Etiam ut dictum ligula. Aliquam ac tortor vel sem venenatis condimentum. Quisque eu nulla leo. Suspendisse aliquet enim at rutrum laoreet. Pellentesque id nulla ligula. In odio sem, porttitor non tellus eget, pulvinar molestie tortor. Nullam non orci vitae ligula egestas placerat ut a ipsum. Aenean semper lorem eget orci congue lacinia.</p>
+<hr>
+<a href="#" class="btn">Ссылка-кнопка обычная</a> <input type="button" class="btn" value="Кнопка обычная"><br><br>
+<a href="#" class="btn btn-gray">Ссылка-кнопка серая</a> <input type="button" class="btn btn-gray" value="Кнопка серая"><br><br>
+<a href="#" class="btn btn-cancle">Ссылка-кнопка отмена</a> <input type="button" class="btn btn-cancle" value="Кнопка отмена"><br><br>
+<a href="#" class="btn btn-remove">Ссылка-кнопка удалить</a> <input type="button" class="btn btn-remove" value="Кнопка удалить"><br><br>
+<a href="#" class="btn btn-big">Ссылка-кнопка большая</a>

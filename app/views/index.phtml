@@ -1,17 +1,22 @@
 <?php use Phalcon\Tag as Tag ?>
-<?= Tag::getDocType(); ?>
+<?= $this->tag->getDocType(); ?>
 <html lang="ru">
 <head>
-	<meta charset="utf-8">
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+	<?= $this->tag->getCharset(); ?>
+	<?= $this->tag->getFavicon(); ?>
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="HandheldFriendly" content="true">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+	
+	<!-- Meta Tags -->
 	<?= $this->tag->getTitle(); ?>
 	<?= $this->tag->getDescription(); ?>
 	<?= $this->tag->getKeywords(); ?>
-
+	
+	<!-- Open Graph -->
+	<?= $this->og->output(); ?>
+	
+	<!-- Assets -->
 	<?= $this->assets->outputCss(); ?>
 	<?= $this->assets->outputJs(); ?>
 
@@ -22,34 +27,41 @@
 <div class="warp">
 
 	<div class="header-name">
-		<a href="/"><?= Tag::getValue('name'); ?></a>
-	</div>
-	<ul class="header-button">
-	<?php if ($this->session->has('auth_login')) { ?>
-		<li><a id="add" href="/p/create"><i class="fa fa-pencil"></i></a></li>
-	<?php } ?>
-		<li><a id="bars" href="#"><i class="fa fa-bars"></i></a></li>
-	<?php if ($this->session->has('auth_login')) { ?>
-		<li><a href="/users/logout"><i class="fa fa-sign-out"></i></a></li>
-	<?php } ?>
-	</ul>
-	<div class="header-menu" role="navigation">
-		<ul>
-			<li><?= Tag::linkTo('about', 'Обо мне'); ?></li>
-			<li><?= Tag::linkTo('snake', 'Змейка'); ?></li>
-		</ul>
+		<?= Tag::linkTo([ $this->url->get([ 'for' => 'home-link' ]), Tag::getValue('name'), 'title' => Tag::getValue('name') ]); ?>
 	</div>
 
+	<div class="header-bars" id="close">
+		<span class="bar-line"></span>
+		<span class="bar-line"></span>
+		<span class="bar-line"></span>
+	</div>
+
+	<div class="header-menu" role="navigation">
+		<ul>
+			<li><?= $this->tag->menuLink([ $this->url->get([ 'for' => 'post-home' ]), 'post\'s' ]); ?></li>
+			<li><?= $this->tag->menuLink([ $this->url->get([ 'for' => 'portfolio-home' ]), 'portfolio' ]); ?></li>
+			<li><?= $this->tag->menuLink([ $this->url->get([ 'for' => 'page-about' ]), 'about' ]); ?></li>
+			<?php if ($this->session->has('auth_login')) { ?>
+				<li><?= $this->tag->menuLink([ $this->url->get([ 'for' => 'post-create' ]), 'create' ]); ?></li>
+				<li><?= $this->tag->menuLink([ $this->url->get([ 'for' => 'user-logout' ]), 'logout' ]); ?></li>
+			<?php } ?>
+		</ul>
+	</div>
+	
+	<div class="clearfix"></div>
 </div>
 </header>
 
-<?php $this->flashSession->output(); ?>
+<? $this->flashSession->output(); ?>
 
-<section>
+<? if ($this->tag->getWell())
+	$this->partial("partial/well", [ 'well' => $this->tag->getWell() ]) ?>
+
+<section id="main">
 <div class="warp">
 
 	<?= $this->getContent() ?>
-
+	
 </div>
 </section>
 
@@ -57,8 +69,9 @@
 <footer id="footer">
 <div class="warp">
 
-	<p>Powered by <b>Skopy</b> <a href="#" id="rise"><i class="fa fa-angle-up"></i></a></p>
-	
+	<p>&copy; <?= $this->tag->getValue('name'); ?>, CC BY 4.0, <?= date('Y'); ?></p>
+	<p>Powered by <a href="https://github.com/yuriygr/skopy">Skopy</a></p>
+
 </div>
 </footer>
 

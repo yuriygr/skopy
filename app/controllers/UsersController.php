@@ -2,100 +2,61 @@
 
 class UsersController extends ControllerBase
 {
-	public function indexAction()
-	{
-		return $this->response->redirect("u/login");
-	}
-
 	public function loginAction()
 	{
-		$this->tag->prependTitle("Авторизация");
-		if ($this->session->has('auth_login'))
-			return $this->response->redirect("post");
+		if ($this->auth->isLogin())
+			return $this->_redirectHome();
+
+		/*
+		* ШАБЛОН
+		*/
+		$this->tag->prependTitle('Authentication');
+
+		/**
+		 * МОЮЩЕЕ СРЕДСТВО
+		 */
+		if ($this->request->isPost() && $this->request->isAjax() && $this->request->isSecure()) {
+
+			try {
+				
+				$email 		= $this->request->getPost('email', 'email');
+				$password 	= $this->request->getPost('password', 'striptags');
+
+				if (!$email)
+					throw new \Phalcon\Exception('Email is required');
+
+				if (!$password)
+					throw new \Phalcon\Exception('Password is required');
+
+				$user = Users::findFirstByEmail($email);
+
+				if ($user) {
+					if ($this->security->checkHash($password, $user->password)) {
+
+						$this->auth->login($user);
+						
+						return $this->_returnJson([ 'redirect' => $this->url->get([ 'for' => 'home-link' ]) ]);
+					} else {
+						throw new \Phalcon\Exception('Incorrect email or password');
+					}
+				} else {
+					$this->security->hash(rand());
+					throw new \Phalcon\Exception('Incorrect email or password');
+				}
+
+			} catch (\Phalcon\Exception $e) {
+				return $this->_returnJson([ 'error' => $e->getMessage() ]);
+			}
+
+		}
 	}
 
 	public function logoutAction()
 	{
-		$this->session->remove('auth');
-		$this->session->remove('auth_login');
-		$this->flashSession->success("Вы успешно покинули систему");
-		return $this->response->redirect($this->url->get([ 'for' => 'home-link' ]));
-	}
+		if (!$this->auth->isLogin())
+			return $this->_redirectHome();
 
-	public function authAction()
-	{
-
-		if ( $this->request->isPost() && $this->request->isAjax() ) {
-			$e = new Phalcon\Escaper();
-
-			$login 		= 	$this->request->getPost('login');
-			$login		=	$this->filter->sanitize($login, 'striptags');
-			$kasumi 	=	$e->escapeHtml($login);
-
-			$password 	= 	$this->request->getPost('password');
-			$password	=	$this->filter->sanitize($password, 'striptags');
-
-			$user = Users::findFirstByLogin($login);
-			
-			if (!$login)
-				return $this->_returnJson([ 'error' => 'Введите логин' ]);
-
-			if ($user) {
-				if ($this->security->checkHash($password, $user->password)) {
-					$this->session->set('auth', $user->id);
-					$this->session->set('auth_login', $user->login);
-						
-					return $this->_returnJson([ 'redirect' => $this->url->get([ 'for' => 'home-link' ]) ]);
-				} else {
-					return $this->_returnJson([ 'error' => 'Пароль не верен' ]);
-				}
-			} else {
-				return $this->_returnJson([ 'error' => 'Пользователь с таким логином не найден' ]);
-			}
-		}
-
-		return $this->response->redirect($this->url->get([ 'for' => 'home-link' ]));
-	}
-
-	public function showAction()
-	{
-		$login = $this->dispatcher->getParam('login');
-
-		// Параметры для выборки пользователя
-		$parameter = ['login = :login:', 'bind' => ['login' => $login]];
-
-		// Выбираем данные
-		$user = Users::findFirst($parameter);
-
-		// Проверка на наличие пользователя
-		if (!$user)
-			return $this->_notFound();
-
-		// Создаем переменные для шаблона
-		$this->view->setVar('user', $user);
-
-		// Создаем заголовок
-		$this->tag->prependTitle($user->name);
-	}
-
-	public function settingAction()
-	{
-		$login = $this->session->get('auth_login');
-
-		// Параметры для выборки пользователя
-		$parameter = ['login = :login:', 'bind' => ['login' => $login]];
-
-		// Выбираем данные
-		$user = Users::findFirst($parameter);
-
-		// Проверка на наличие пользователя
-		if (!$user)
-			return $this->_notFound();
-
-		// Создаем переменные для шаблона
-		$this->view->setVar('user', $user);
-
-		// Создаем заголовок
-		$this->tag->prependTitle('Настройки профиля');
+		$this->auth->logout();
+		return $this->_redirectHome();
 	}
 }

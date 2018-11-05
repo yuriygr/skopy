@@ -21,7 +21,7 @@ class OpenGraph
 		if ($parameter['title'])
 			$this->title = $parameter['title'];
 
-		if ($parameter['description'])		
+		if ($parameter['description'])
 			$this->description = $parameter['description'];
 
 		if ($parameter['url'])
@@ -42,11 +42,22 @@ class OpenGraph
 			$meta .= '<meta property="og:title" content="' . $this->title . '">'."\r\n";
 		
 		if ($this->description)
-			$meta .= '<meta property="og:description" content="' . $this->description . '.">'."\r\n";
+			$meta .= '<meta property="og:description" content="' . self::_cleanText($this->description) . '">'."\r\n";
 		
 		if ($this->url)
 			$meta .= '<meta property="og:url" content="' . $this->url . '">'."\r\n";
 
 		return $meta;
+	}
+
+	private function _cleanText($string)
+	{
+		$filter =  \Phalcon\DI\FactoryDefault::getDefault()->getShared('filter');
+		$string = $filter->sanitize($string, 'striptags');
+		$string = preg_replace('/\s+$/m', ' ', $string);
+		$string = str_replace("\n",'', $string);
+		$string = preg_replace('/ {2,}/', ' ', $string);
+
+		return $string;
 	}
 }

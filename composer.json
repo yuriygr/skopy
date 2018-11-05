@@ -1,0 +1,42 @@
+{
+	"name": "yuriygr/skopy",
+	"description": "Движок блога на фрейморвке Phalcon",
+	"version": "1.5.6",
+	"keywords": [
+		"phalcon",
+		"framework",
+		"sample app",
+		"blog",
+		"skopy"
+	],
+	"type": "project",
+	"license": "GPL-2.0+",
+	"homepage": "https://github.com/yuriygr/skopy",
+	"authors" : [
+		{
+			"name" : "Yuriy Grinev",
+			"email" : "a1d516ac5f5d290@gmail.com"
+		}
+	],
+	"support": {
+		"email": "a1d516ac5f5d290@gmail.com",
+		"issues": "https://github.com/yuriygr/skopy/issues"
+	},
+	"require": {
+		"php": ">=5.6",
+		"ext-phalcon": ">=3.0.0",
+		"vlucas/phpdotenv": "^2.4",
+		"chriskonnertz/open-graph": "~1"
+	},
+	"scripts": {
+		"post-root-package-install": [
+			"php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+		]
+	},
+	"config": {
+		"vendor-dir": "app/vendor",
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"minimum-stability": "stable"
+}

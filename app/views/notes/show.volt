@@ -1,0 +1,1 @@
+{{ partial('common/note-item', ['content': 'full']) }}

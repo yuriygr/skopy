@@ -12,7 +12,7 @@
 
 (function($) {
 	$.fn.ambiance = function(options) {
-
+		
 		var defaults = {
 			title: "",
 			message: "",
@@ -74,8 +74,7 @@
 jQuery(document).ready(function() {
 	// Deal with adding the notification area to the page.
 	if (jQuery("#ambiance-notification").length == 0) {
-		var note_area = jQuery(window.document.createElement('div'))
-										 .attr("id", "ambiance-notification");
+		var note_area = jQuery(window.document.createElement('div')).attr("id", "ambiance-notification");
 		jQuery('body').append(note_area);
 	}
 });

@@ -2,34 +2,12 @@
 
 class ControllerBase extends \Phalcon\Mvc\Controller
 {
-	public function initialize()
-	{
-		$this->tag->setAutoescape(false);
-		$this->tag->setDocType(Phalcon\Tag::HTML5);
-		$this->tag->setFavicon($this->config->site->favicon);
-		$this->tag->setTitleSeparator(' - ');
 
-		// Записываем метатеги
-		$this->tag->setTitle($this->config->site->title);
-		$this->tag->setDescription($this->config->site->description);
-		$this->tag->setKeywords($this->config->site->keywords);
-
-		$this->tag->setDefault('name', $this->config->site->title);
-
-		// Записываем ассетс
-		$this->assets
-			 ->addJs('//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js', false)
-			 ->addJs('js/jquery.share.js')
-			 ->addJs('js/jquery.ambiance.js')
-			 ->addJs('js/main.js');
-		$this->assets
-			 ->addCss('//fonts.googleapis.com/css?family=Open+Sans:300,400&amp;subset=latin,cyrillic-ext', false)
-			 ->addCss('//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', false)
-			 ->addCss('css/reset.css')
-			 ->addCss('css/style.css');
-	}
-	/*
-	 * Ахтунг! Возвращает json контент
+	/**
+	 * Simple return json content from array
+	 * 
+	 * @param  array $array
+	 * @return json
 	 */
 	public function _returnJson($array)
 	{
@@ -38,11 +16,38 @@ class ControllerBase extends \Phalcon\Mvc\Controller
 		$this->response->setJsonContent($array);
 		return false;
 	}
+
+	/**
+	 * Return 404 from action
+	 * 
+	 * @return view
+	 */
 	public function _notFound()
 	{
-		$this->response->setStatusCode(404, "Not Found");
-		$this->tag->prependTitle("Error 404");
-		return $this->view->pick('index/show404');
+		$this->dispatcher->forward([
+			'controller' => 'pages',
+			'action' => 'show404'
+		]);
+		return false;
+	}
+	
+	/**
+	 * Redirect to home route
+	 * 
+	 * @return response
+	 */
+	public function _redirectHome()
+	{
+		return $this->response->redirect($this->url->get([ 'for' => 'home-link' ]));
 	}
 
+	/**
+	 * Redirect to home login
+	 * 
+	 * @return response
+	 */
+	public function _redirectLogin()
+	{
+		return $this->response->redirect($this->url->get([ 'for' => 'user-login' ]));
+	}
 }

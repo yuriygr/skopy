@@ -4,6 +4,12 @@ namespace Phalcon\Utils;
 
 class Slug
 {
+	/**
+	 * Generate Slug from string
+	 * 
+	 * @param  string $string Usually, post/page title
+	 * @return string         hello-world
+	 */
 	public static function generate($string)
 	{	
 		// Удаляем пробелы с конца строки
@@ -15,8 +21,7 @@ class Slug
 		// Переводим текст в нижний регистр, strtolower() с кириллицей применить не получится
 		$string = mb_convert_case($string, MB_CASE_LOWER, 'UTF-8');
 
-		# Транслитерация
-
+		// Транслитерация
 		$alphabet = [
 			"а" => "a", "б" => "b", "в" => "v", "г" => "g", "д" => "d", "е" => "e",
 			"ё" => "yo", "ж" => "j", "з" => "z", "и" => "i", "й" => "i", "к" => "k", "л" => "l", "м" => "m",
@@ -24,10 +29,10 @@ class Slug
 			"у" => "y", "ф" => "f", "х" => "h", "ц" => "c", "ч" => "ch", "ш" => "sh", "щ" => "sch",
 			"ы" => "i", "э" => "e", "ю" => "u", "я" => "ya", "ь" => "", "ъ" => ""
 		];
-
 		$string = strtr($string, $alphabet);
 
-		$string = preg_replace('/[^a-zа-яё0-9_-]/u', '', $string); # убираем ненужные символы
+		// убираем ненужные символы
+		$string = preg_replace('/[^a-zа-яё0-9_-]/u', '', $string);
 
 		return $string;
 

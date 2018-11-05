@@ -1,28 +1,26 @@
 $(document).ready(function() {
-	/*
-		Share
-		=========================================================
-	*/
-	$(document).on('click', '.share a', function(){
-		if (this.id)
-			$.share(this.id, { title: document.title, url: location.href });
-		return false;
+	/* Ctrl
+	========================================================= */
+	var ctrl = false;
+	$(window).keydown(function(e) {
+		if (e.keyCode == 17) ctrl = true;
+	})
+	.keyup(function(e) {
+		if (e.keyCode == 17) ctrl = false;
+	})
+	.blur(function() {
+		ctrl = false;
 	});
-	/*
-		Toggle mobile menu
-		=========================================================
-	*/
-	$(document).on('click', '.header-bars', function(){
-		if ($(this).attr('id') == 'close') {
-			$(this).attr('id', 'open');
-			$('.header-menu').addClass('active');
-			return false;
-		}
-		if ($(this).attr('id') == 'open') {
-			$(this).attr('id', 'close');
-			$('.header-menu').removeClass('active');
-			return false;
-		}
+	/* Запрет флуда
+	========================================================= */
+	var pressed = false;
+	$('[data-stop-repit]').keydown(function(e) {
+	    if (pressed)
+	        e.preventDefault();
+	    pressed = true;
+	});
+	$('[data-stop-repit]').keyup(function(e) {
+	    pressed = false;
 	});
 	/*
 		Scroll To Top
@@ -33,50 +31,33 @@ $(document).ready(function() {
 		return false;
 	});
 	/*
-		Alert
-		=========================================================
-	*/
-	$(document).on('click', '.alert .close', function(){
-		$(this).parent().fadeOut();
-		return false;
-	});
-	$('.alert').delay(5000).fadeOut();
-	/*
-		Dropdown
-		=========================================================
-	*/
-	$(document).on('click', '.dropdown .dropdown_toggler', function(){
-		var e = $(this).closest('.dropdown');
-		return e.toggleClass('open'),
-		$(document).one("click",function(){
-			e.removeClass("open")
-		}),!1
-	});
-	/*
 		Ajax forms
 		=========================================================
 	*/
-	$('.form[data-ajax=true]').submit(function( event ){
+	$('.form[data-ajax=true]').submit(function( event ) {
 		event.preventDefault();
 
 		var action = $(this).attr('action'),
 			data   = $(this).serialize();
 
-		$.post(action, data, function (data, status) {
+		$.post(action, data)
+		.then(function(data, status) {
 			if (status == "success") {
-				if (data.success) {
-					$.ambiance({ message: data.success, title: 'Успех', type: 'success' });
-				}
-				if (data.error) {
-					$.ambiance({ message: data.error, title: 'Ошибка', type: 'error' });
-				}
+				$.ambiance({ message: data.message, type: data.status });
+
 				if (data.redirect) {
 					$(location).attr('href', data.redirect);
 				}
 			} else {
-				$.ambiance({ message: 'Непредвиденная ошабка', title: 'Ошибка', type: 'error' });
+				$.ambiance({ message: 'Some error', type: 'error' });
 			}
+			console.log(data);
+		})
+		.fail(function(error) {
+			$.ambiance({ message: error, type: 'error' });
+		})
+		.always(function() {
+			console.log( "finished" );
 		});
 	});
-
 });

@@ -4,23 +4,22 @@ namespace Phalcon\Utils;
 
 class Timeformat
 {
-	/*
-	 * $datatime Переменная содержащая Сегодня/Вчера/Полную дату
-	 * $postMinute Тупо дописывается после всего дерьма
+	/**
+	 * Generate humanlike time
+	 * 
+	 * @param  int(11) $timestamp Typical timestamp
+	 * @return string
 	 */
 	public static function generate($timestamp)
-	{	
+	{
 		$postDate = date( "d.m.Y", $timestamp );
 		$postMinute = date( "H:i", $timestamp );
-		
+
 		if ($postDate == date('d.m.Y')) {
-			// Если сегодня
 			$datetime = 'Cегодня в ';
 		} else if ($postDate == date('d.m.Y', strtotime('-1 day'))) {
-			// Если вчера
 			$datetime = 'Вчера в ';
 		} else {
-			// Иначе
 			$fulldate = date( "j # Y в ", $timestamp );
 			$mon = date("m", $timestamp );
 			switch( $mon ) {
@@ -37,10 +36,29 @@ class Timeformat
 				case 11: { $mon='Ноября'; } break;
 				case 12: { $mon='Декабря'; } break;
 			}
-			$fulldate = str_replace( '#', $mon, $fulldate );
-			$datetime = $fulldate;
+			$datetime = str_replace( '#', $mon, $fulldate );
 		}
 		return $datetime.$postMinute;
+	}
 
+	/**
+	 * [normal description]
+	 * 
+	 * @param  int(11) $timestamp
+	 * @return string
+	 */
+	public static function normal($timestamp)
+	{
+		return date("d.m.Y H:i", $timestamp);
+	}
+	/**
+	 * Generate atom time
+	 *
+	 * @param  int(11) $timestamp
+	 * @return string
+	 */
+	public static function atom($timestamp)
+	{
+		return date(DATE_ATOM, $timestamp);
 	}
 }
